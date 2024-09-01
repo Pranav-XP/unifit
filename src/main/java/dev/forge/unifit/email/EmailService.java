@@ -1,39 +1,55 @@
 package dev.forge.unifit.email;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import dev.forge.unifit.booking.Booking;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
+
+
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
+@Component
 public class EmailService {
+    @Value("${sendgrid.apikey}")
+    private String apiKey;
 
-    private final JavaMailSender mailSender;
-    private final TemplateEngine templateEngine;
 
-    public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
-        this.mailSender = mailSender;
-        this.templateEngine = templateEngine;
+
+    private Map<String,String> createBookingEmailPayload(Booking booking){
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mma");
+        BookingEmailDTO bookingPayload;
+        bookingPayload = new BookingEmailDTO();
+
+        String customerName = booking.getUser().getFirstName() + " " + booking.getUser().getLastName();
+
+        bookingPayload.setBookingId(booking.getId().toString());
+        bookingPayload.setCustomerName(customerName);
+        bookingPayload.setBookingDate(booking.getBookedDate().format(dateFormatter));
+        bookingPayload.setBookingStart(booking.getStart().format(timeFormatter));
+        bookingPayload.setBookingEnd(booking.getEnd().format(timeFormatter));
+        bookingPayload.setFacilityName(booking.getFacility().getName());
+        bookingPayload.setStatus(booking.getStatus().getDisplayName());
+        bookingPayload.setTotal(booking.getFacility().getFacilityType().getRate().toString());
+
+        Map<String, String> data = new HashMap<>();
+
+        // Add firstname
+        data.put("bookingId", bookingPayload.getBookingId());
+        data.put("customerName",bookingPayload.getCustomerName());
+        data.put("bookingDate",bookingPayload.getBookingDate());
+        data.put("facilityName",bookingPayload.getFacilityName());
+        data.put("bookingStart",bookingPayload.getBookingStart());
+        data.put("status",bookingPayload.getStatus());
+        data.put("bookingEnd",bookingPayload.getBookingEnd());
+        data.put("total",bookingPayload.getTotal());
+
+        return data;
     }
 
-    public void sendEmail(String toEmail) throws MessagingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setFrom("pranavchand777@gmail.com");
-        helper.setTo(toEmail);
-        helper.setSubject("Your UniFit Booking Invoice - TEST FROM PRANAV");
-
-        Context context = new Context();
-        context.setVariable("customerName", "Peter Parker");
-        context.setVariable("totalPrice", "15");
-
-        String htmlContent = templateEngine.process("invoice-email", context);
-        helper.setText(htmlContent, true);
-
-        mailSender.send(message);
-    }
 }

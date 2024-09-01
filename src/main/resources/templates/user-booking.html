@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100">
+    <div th:replace="fragments/header :: header"></div>
+    <main class="mt-[88px] px-5 py-10">
+      <h2 class="text-2xl lg:text-3xl font-bold text-center">
+        Booking Details
+      </h2>
+
+      <div
+        class="w-full md:w-1/2 mx-auto bg-white p-8 shadow-md rounded-md mt-5"
+      >
+        <!-- Left Column - User's Booking Information -->
+        <div class="text-lg space-y-2">
+          <!-- Add your user's booking information here -->
+          <p
+            th:text="${booking.status.getDisplayName()}"
+            th:class="${T(dev.cocoa.uspgymbooking.booking.BookingStatus).getStatusColor(booking.status)}"
+          >
+            Status
+          </p>
+          <p class="text-gray-700">
+            <strong>Booking ID: </strong>
+            <span th:text="${booking.id}"></span>
+          </p>
+
+          <p class="text-gray-700">
+            <strong>Customer: </strong>
+            <span
+              th:text="${booking.user.firstName + ' ' + booking.user.lastName}"
+            ></span>
+          </p>
+          <p class="text-gray-700">
+            <strong>Facility: </strong>
+            <span th:text="${booking.facility.name}"></span>
+          </p>
+          <p class="text-gray-700">
+            <strong>Date: </strong><span th:text="${booking.bookedDate}"></span>
+          </p>
+          <p class="text-gray-700">
+            <strong>Start Time: </strong
+            ><span
+              th:text="${#temporals.format(booking.start, 'h:mma')}"
+            ></span>
+          </p>
+          <p class="text-gray-700">
+            <strong>End Time: </strong
+            ><span th:text="${#temporals.format(booking.end, 'h:mma')}"></span>
+          </p>
+        </div>
+      </div>
+      <p class="ml-80 mt-4">
+        <a href="/user" class="text-blue-500 cursor-pointer underline"
+          >Back to Profile</a
+        >
+      </p>
+    </main>
+  </body>
+</html>
