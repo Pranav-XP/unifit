@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create Booking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100">
+    <!--HEADER FRAGMENT-->
+    <div th:replace="fragments/header :: header"></div>
+    <main class="mt-16 lg:mt-[60px] p-5 lg:pl-10 lg:pr-20">
+      <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mt-6 mb-8">
+        Select a date and available time
+      </h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <section id="bookingForm" class="lg:p-4">
+          <form
+            class="flex bg-gray-200 border rounded-md flex-col gap-3 p-4"
+            method="post"
+            th:action="@{/booking/add}"
+            th:object="${booking}"
+          >
+            <p class="font-semibold">
+              Customer name:
+              <span
+                class="font-normal"
+                th:text="${user.firstName ?: ''} + ' ' + ${user.lastName ?: ''}"
+                >First name Last Name</span
+              >
+            </p>
+            <p class="font-semibold">
+              Selected Facility:
+              <span class="font-normal" th:text="${facility.name}"
+                >Facility Name</span
+              >
+            </p>
+
+            <p class="font-semibold">
+              Total Amount:
+              <span
+                class="font-normal"
+                th:text="'$' + ${facility.facilityType.rate}"
+              ></span>
+            </p>
+
+            <input
+              type="hidden"
+              id="userId"
+              name="userId"
+              th:field="*{userId}"
+            />
+            <input
+              type="hidden"
+              id="selectedFacilityId"
+              th:field="*{facilityId}"
+            />
+            <input type="hidden" id="facilityId" th:value="${facility.id}" />
+
+            <label for="bookingDate" class="font-semibold">Date:</label>
+            <input
+              class="p-2 rounded"
+              type="date"
+              id="bookingDate"
+              th:field="*{bookedDate}"
+              th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
+              required
+            />
+
+            <label for="startTime" class="font-semibold">Start Time:</label>
+            <input
+              class="p-2 rounded"
+              type="time"
+              readonly
+              required
+              id="startTime"
+              th:field="*{start}"
+            />
+
+            <label for="endTime" class="font-semibold">End Time:</label>
+            <input
+              class="p-2 rounded"
+              type="time"
+              readonly
+              required
+              id="endTime"
+              th:field="*{end}"
+            />
+
+            <button
+              type="submit"
+              class="border border-blue-600 text-lg lg:text-base bg-blue-500 px-5 py-2 rounded-md font-semibold hover:bg-blue-600 text-white w-full"
+            >
+              Book Facility
+            </button>
+          </form>
+        </section>
+        <section class="flex flex-col pl-0 lg:pl-5">
+          <h2 class="text-xl md:text-2xl lg:text-3xl font-semibold pb-2">
+            Available Times
+          </h2>
+          <div id="availableTimes" class="flex flex-wrap gap-5"></div>
+        </section>
+      </div>
+    </main>
+  </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let datepicker = document.getElementById("bookingDate");
+      datepicker.addEventListener("input", function () {
+        let selectedDate = datepicker.value;
+
+        let facilityId = document.getElementById("facilityId").value;
+
+        console.log(selectedDate);
+        console.log(facilityId);
+
+        // Call the function to fetch available times
+        fetchAvailableTimes(selectedDate, facilityId);
+      });
+
+      // Delegate the click event to the parent container
+      document
+        .getElementById("availableTimes")
+        .addEventListener("click", function (event) {
+          if (event.target.classList.contains("time-slot")) {
+            // Get the clicked time from the div's data-time attribute
+            let clickedTime = event.target.getAttribute("data-time");
+
+            // Set the booking start and end time in the form
+            document.getElementById("startTime").value = clickedTime;
+            // You can set the end time based on your business logic
+
+            // For example, add one hour to the clicked time
+            let endDateTime = new Date(`2000-01-01 ${clickedTime}`);
+            endDateTime.setHours(endDateTime.getHours() + 1);
+
+            document.getElementById("endTime").value =
+              endDateTime.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+          }
+        });
+    });
+
+    function fetchAvailableTimes(selectedDate, facilityId) {
+      // Make a fetch request to your Spring Boot endpoint
+      fetch(
+        `/api/v1/availableTimes?date=${selectedDate}&facilityId=${facilityId}`,
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          let availableTimesDiv = document.getElementById("availableTimes");
+          availableTimesDiv.innerHTML = "";
+
+          // Create divs for each available time
+          data.forEach((time) => {
+            let div = document.createElement("div");
+            div.innerText = formatTime(time);
+            div.setAttribute("data-time", time);
+            div.classList.add(
+              "time-slot",
+              "bg-blue-500",
+              "hover:bg-blue-600",
+              "text-white",
+              "font-semibold",
+              "border",
+              "border-blue-600",
+              "rounded",
+              "px-4",
+              "py-2",
+              "cursor-pointer",
+            );
+            availableTimesDiv.appendChild(div);
+          });
+        })
+        .catch((error) => {
+          console.error("Fetch error:", error);
+        });
+    }
+
+    function formatTime(time) {
+      // Format time to display as "7:00am"
+      const parsedTime = new Date(`2000-01-01T${time}`);
+      const hours = parsedTime.getHours();
+      const minutes = parsedTime.getMinutes();
+      const period = hours >= 12 ? "pm" : "am";
+      const formattedHours = (hours % 12 === 0 ? 12 : hours % 12)
+        .toString()
+        .padStart(2, "0");
+      const formattedMinutes = minutes.toString().padStart(2, "0");
+
+      return `${formattedHours}:${formattedMinutes}${period}`;
+    }
+  </script>
+</html>

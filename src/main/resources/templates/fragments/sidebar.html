@@ -1,0 +1,40 @@
+<!-- sidebar.html -->
+<aside
+  class="hidden lg:block bg-blue-500 text-white w-1/6 border-r border-slate-50 rounded-r-lg fixed h-screen overflow-hidden"
+>
+  <nav class="flex flex-col font-semibold w-full">
+    <a href="/" class="text-lg py-10 pl-3"
+      ><h1 class="text-4xl font-extrabold">UniFit</h1></a
+    >
+    <a
+      href="/admin"
+      class="border-b hover:bg-blue-600 text-lg border-slate-50 py-5 pl-3"
+    >
+      Dashboard
+    </a>
+    <a
+      th:href="@{/admin/booking}"
+      class="border-b hover:bg-blue-600 text-lg border-slate-50 py-5 pl-3"
+    >
+      View Bookings
+    </a>
+    <a
+      th:href="@{/admin/maintenance}"
+      class="border-b hover:bg-blue-600 text-lg border-slate-50 py-5 pl-3"
+    >
+      Manage Schedule
+    </a>
+    <a
+      th:href="@{/admin/facilities}"
+      class="border-b hover:bg-blue-600 text-lg border-slate-50 py-5 pl-3"
+    >
+      Manage Facilities
+    </a>
+    <a
+      th:href="@{/logout}"
+      class="border-b hover:bg-blue-600 text-lg border-slate-50 py-5 pl-3"
+    >
+      Logout
+    </a>
+  </nav>
+</aside>

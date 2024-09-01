@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+  </head>
+  <body class="bg-gray-100">
+    <div th:replace="fragments/admin-header.html :: header"></div>
+    <div th:replace="fragments/sidebar :: aside"></div>
+    <main class="p-10 lg:ml-[190px] lg:pt-10 pt-20">
+      <div class="container mx-auto px-5">
+        <section class="px-5 pb-5">
+          <h2
+            class="text-2xl font-bold my-4"
+            th:text="'Update'+${facilityType.name}"
+          ></h2>
+          <!-- Edit Facility Form -->
+          <form
+            th:action="@{/admin/facilities/type/update}"
+            method="post"
+            th:object="${facilityType}"
+            class="w-full bg-white p-8 rounded-md shadow-md"
+          >
+            <!-- Facility Name -->
+            <div class="mb-4">
+              <input
+                type="hidden"
+                id="facilityId"
+                name="name"
+                th:field="*{id}"
+                class="w-full px-3 py-2 border rounded-md"
+                required
+              />
+              <label for="name" class="block text-gray-700 font-semibold mb-2"
+                >Name:</label
+              >
+              <input
+                type="text"
+                id="name"
+                name="name"
+                th:field="*{name}"
+                class="w-full px-3 py-2 border rounded-md"
+                required
+              />
+            </div>
+
+            <!-- Facility Image URL -->
+            <div class="mb-4">
+              <label
+                for="imageUrl"
+                class="block text-gray-700 font-semibold mb-2"
+                >Rate:</label
+              >
+              <input
+                required
+                type="number"
+                id="imageUrl"
+                name="imageUrl"
+                th:field="*{rate}"
+                class="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
+
+            <!-- Save Button -->
+            <div class="mb-4">
+              <button
+                type="submit"
+                class="bg-blue-500 text-white font-semibold px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+    <script>
+      const socket = new SockJS("/ws");
+      const stompClient = Stomp.over(socket);
+
+      stompClient.connect({}, () => {
+        stompClient.subscribe("/topic/admin", (notification) => {
+          // Handle the incoming notification
+          const message = JSON.parse(notification.body);
+          console.log("Recieved Booking Notification:", message);
+          // Display the notification to the admin
+          displayNotification(message);
+        });
+      });
+
+      function displayNotification(notification) {
+        // Extract booking information
+        let bookingId = notification.bookingId;
+        let customerName = notification.customerName;
+        let facilityName = notification.facilityName;
+
+        // Create a message for the toast
+        var message = `${customerName} has made a booking at ${facilityName}.`;
+
+        // Show a toast notification
+        Toastify({
+          text: message,
+          duration: 5000, // Adjust duration as needed
+          close: true,
+          gravity: "top", // Position of the toast
+          position: "right", // Position of the toast
+          className: "font-semibold bg-blue-500 hover:bg-blue-600",
+          destination: `/admin/booking/${bookingId}`,
+        }).showToast();
+      }
+    </script>
+  </body>
+  <script
+    type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/toastify-js"
+  ></script>
+</html>

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+  </head>
+  <body class="bg-gray-100">
+    <div th:replace="fragments/admin-header.html :: header"></div>
+    <div th:replace="fragments/sidebar :: aside"></div>
+    <main class="p-10 lg:ml-[190px] lg:pt-10 pt-20">
+      <div class="container mx-auto px-5">
+        <section class="px-5 pb-5">
+          <h2
+            class="text-2xl font-bold my-4"
+            th:text="'Update'+${facility.name}"
+          ></h2>
+          <!-- Edit Facility Form -->
+          <form
+            th:action="@{/admin/facilities/update}"
+            method="post"
+            th:object="${facility}"
+            class="w-full bg-white p-8 rounded-md shadow-md"
+          >
+            <!-- Facility Name -->
+            <div class="mb-4">
+              <input
+                type="hidden"
+                id="facilityId"
+                name="name"
+                th:field="*{id}"
+                class="w-full px-3 py-2 border rounded-md"
+                required
+              />
+              <label for="name" class="block text-gray-700 font-semibold mb-2"
+                >Facility Name:</label
+              >
+              <input
+                type="text"
+                id="name"
+                name="name"
+                th:field="*{name}"
+                class="w-full px-3 py-2 border rounded-md"
+                required
+              />
+            </div>
+
+            <!-- Facility Description -->
+            <div class="mb-4">
+              <label
+                for="description"
+                class="block text-gray-700 font-semibold mb-2"
+                >Facility Description:</label
+              >
+              <textarea
+                id="description"
+                name="description"
+                th:text="${facility.description}"
+                th:field="*{description}"
+                class="w-full px-3 py-2 border rounded-md"
+                required
+              ></textarea>
+            </div>
+
+            <!-- Facility Image URL -->
+            <div class="mb-4">
+              <label
+                for="imageUrl"
+                class="block text-gray-700 font-semibold mb-2"
+                >Facility Image URL:</label
+              >
+              <input
+                required
+                type="text"
+                id="imageUrl"
+                name="imageUrl"
+                th:field="*{imageUrl}"
+                class="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
+
+            <!-- Facility Status -->
+            <div class="mb-4">
+              <label for="status" class="block text-gray-700 font-semibold mb-2"
+                >Facility Status:</label
+              >
+              <select
+                id="status"
+                th:field="*{status}"
+                name="status"
+                class="w-full px-3 py-2 border rounded-md"
+              >
+                <!-- Add options based on your enum values -->
+                <option
+                  th:each="status : ${T(dev.cocoa.uspgymbooking.facility.FacilityStatus).values()}"
+                  th:value="${status}"
+                  th:text="${status.getDisplayName()}"
+                ></option>
+              </select>
+            </div>
+
+            <h3 class="font-bold text-xl">Opening Hours:</h3>
+            <p class="mb-2">
+              <span class="font-bold">Weekdays:</span>
+              <span
+                th:text="${#temporals.format(facility.weekdayOpeningTime, 'h:mma')}+ ' to ' + ${#temporals.format(facility.weekdayClosingTime, 'h:mma')}"
+              ></span>
+            </p>
+            <p class="mb-5">
+              <span class="font-bold">Weekends:</span>
+              <span
+                th:text="${#temporals.format(facility.weekendOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekendClosingTime, 'h:mma')}"
+              ></span>
+            </p>
+
+            <!-- Facility Opening and Closing Times -->
+            <h3 class="font-bold text-xl">Weekday Hours:</h3>
+            <div class="mb-4">
+              <label
+                for="weekdayOpeningTime"
+                class="block text-gray-700 font-semibold mb-2"
+                >Opening Time:</label
+              >
+              <input
+                type="time"
+                id="weekdayOpeningTime"
+                name="weekdayOpeningTime"
+                th:field="*{weekdayOpeningTime}"
+                class="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label
+                for="weekdayClosingTime"
+                class="block text-gray-700 font-semibold"
+                >Closing Time:</label
+              >
+              <input
+                type="time"
+                id="weekdayClosingTime"
+                name="weekdayClosingTime"
+                th:field="*{weekdayClosingTime}"
+                class="w-full px-3 py-2 border rounded-md mb-5"
+              />
+            </div>
+
+            <h3 class="font-bold text-xl">Weekend Hours:</h3>
+            <div class="mb-4">
+              <label
+                for="weekendOpeningTime"
+                class="block text-gray-700 font-semibold mb-2"
+                >Opening Time:</label
+              >
+              <input
+                type="time"
+                id="weekendOpeningTime"
+                name="weekendOpeningTime"
+                th:field="*{weekendOpeningTime}"
+                class="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label
+                for="weekendClosingTime"
+                class="block text-gray-700 font-semibold mb-2"
+                >Closing Time:</label
+              >
+              <input
+                type="time"
+                id="weekendClosingTime"
+                name="weekendClosingTime"
+                th:field="*{weekendClosingTime}"
+                class="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
+
+            <!-- Save Button -->
+            <div class="mb-4">
+              <button
+                type="submit"
+                class="bg-blue-500 text-white font-semibold px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+    <script>
+      const socket = new SockJS("/ws");
+      const stompClient = Stomp.over(socket);
+
+      stompClient.connect({}, () => {
+        stompClient.subscribe("/topic/admin", (notification) => {
+          // Handle the incoming notification
+          const message = JSON.parse(notification.body);
+          console.log("Recieved Booking Notification:", message);
+          // Display the notification to the admin
+          displayNotification(message);
+        });
+      });
+
+      function displayNotification(notification) {
+        // Extract booking information
+        let bookingId = notification.bookingId;
+        let customerName = notification.customerName;
+        let facilityName = notification.facilityName;
+
+        // Create a message for the toast
+        var message = `${customerName} has made a booking at ${facilityName}.`;
+
+        // Show a toast notification
+        Toastify({
+          text: message,
+          duration: 5000, // Adjust duration as needed
+          close: true,
+          gravity: "top", // Position of the toast
+          position: "right", // Position of the toast
+          className: "font-semibold bg-blue-500 hover:bg-blue-600",
+          destination: `/admin/booking/${bookingId}`,
+        }).showToast();
+      }
+    </script>
+  </body>
+  <script
+    type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/toastify-js"
+  ></script>
+</html>
