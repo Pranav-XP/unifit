@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Profile Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div th:replace="fragments/header :: header"></div>
+    <main class="mt-[88px] p-10">
+      <h1
+        class="text-[24px] lg:text-4xl font-bold mb-4"
+        th:text="'Welcome '+${user.firstName}"
+      >
+        Welcome User
+      </h1>
+
+      <h2 class="font-semibold text-xl mb-3">
+        View your upcoming bookings below
+      </h2>
+      <table class="min-w-full mb-5">
+        <thead>
+          <tr>
+            <th class="py-2 px-1 border-b text-left">ID</th>
+            <th class="py-2 px-1 border-b text-left">Facility</th>
+            <th class="py-2 px-1 border-b text-left">Date</th>
+            <th class="py-2 px-1 border-b text-left">Start Time</th>
+            <th class="py-2 px-1 border-b text-left">End Time</th>
+            <th class="py-2 px-1 border-b text-left">Status</th>
+            <th class="py-2 px-1 border-b text-center">
+              <i data-lucide="info" class="mx-auto"></i>
+            </th>
+            <!-- Add more columns as needed -->
+          </tr>
+        </thead>
+        <tbody id="bookingTable">
+          <!-- Thymeleaf iteration over bookings -->
+          <tr th:each="booking : ${bookings}">
+            <td class="py-2 px-2 border-b" th:text="${booking.id}"></td>
+            <td
+              class="py-2 px-2 border-b"
+              th:text="${booking.facility.name}"
+            ></td>
+            <td class="py-2 px-2 border-b" th:text="${booking.bookedDate}"></td>
+            <td
+              class="py-2 px-2 border-b"
+              th:text="${#temporals.format(booking.start, 'h:mma')}"
+            ></td>
+            <td
+              class="py-2 px-2 border-b"
+              th:text="${#temporals.format(booking.end, 'h:mma')}"
+            ></td>
+            <td
+              class="py-2 px-2"
+              th:class="${T(dev.cocoa.uspgymbooking.booking.BookingStatus).getStatusColor(booking.status)}"
+              th:text="${booking.status.getDisplayName()}"
+            ></td>
+
+            <td class="py-2 px-2 border-b">
+              <a
+                th:href="@{'/user/bookings/' + ${booking.id}}"
+                class="flex gap-1 font-semibold hover:bg-blue-200 bg-blue-100 justify-center p-1 rounded"
+                >View</a
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="font-semibold text-xl mb-3">View your past bookings below</h2>
+      <table class="min-w-full">
+        <thead>
+          <tr>
+            <th class="py-2 px-1 border-b text-left">ID</th>
+            <th class="py-2 px-1 border-b text-left">Facility</th>
+            <th class="py-2 px-1 border-b text-left">Date</th>
+            <th class="py-2 px-1 border-b text-left">Start Time</th>
+            <th class="py-2 px-1 border-b text-left">End Time</th>
+            <th class="py-2 px-1 border-b text-left">Status</th>
+            <th class="py-2 px-1 border-b text-center">
+              <i data-lucide="info" class="mx-auto"></i>
+            </th>
+            <!-- Add more columns as needed -->
+          </tr>
+        </thead>
+        <tbody id="pastbookingTable">
+          <!-- Thymeleaf iteration over bookings -->
+          <tr th:each="booking : ${pastbookings}">
+            <td class="py-2 px-2 border-b" th:text="${booking.id}"></td>
+            <td
+              class="py-2 px-2 border-b"
+              th:text="${booking.facility.name}"
+            ></td>
+            <td class="py-2 px-2 border-b" th:text="${booking.bookedDate}"></td>
+            <td class="py-2 px-2 border-b" th:text="${booking.start}"></td>
+            <td class="py-2 px-2 border-b" th:text="${booking.end}"></td>
+            <td
+              class="py-2 px-2"
+              th:class="${T(dev.cocoa.uspgymbooking.booking.BookingStatus).getStatusColor(booking.status)}"
+              th:text="${booking.status.getDisplayName()}"
+            ></td>
+
+            <td class="py-2 px-2 border-b">
+              <a
+                th:href="@{'/user/bookings/' + ${booking.id}}"
+                class="flex gap-1 font-semibold hover:bg-blue-200 bg-blue-100 justify-center p-1 rounded"
+                >View</a
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

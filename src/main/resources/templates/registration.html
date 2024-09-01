@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sign Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-blue-300">
+    <main class="flex items-center justify-around w-screen h-screen">
+      <div
+        class="w-fit flex flex-col items-center justify-center p-3 rounded-md border border-neutral-300 bg-slate-50 my-5 font-semibold text-xl"
+        th:if="${param.success}"
+      >
+        <div class="mb-5">Registration successful!</div>
+
+        <a href="/login">
+          <button
+            class="border border-blue-600 text-2xl lg:text-base bg-blue-500 px-5 py-2 rounded-md font-semibold hover:bg-blue-600 text-white"
+            type="submit"
+          >
+            Login
+          </button></a
+        >
+      </div>
+
+      <div
+        class="w-fit flex flex-col items-center justify-center p-3 rounded-md border border-neutral-300 bg-red-200 my-5 font-semibold text-xl"
+        th:if="${param.error}"
+      >
+        <div class="mb-5">User with that email already exists.</div>
+        <a href="/login">
+          <button
+            class="border border-blue-600 text-2xl lg:text-base bg-blue-500 px-5 py-2 rounded-md font-semibold hover:bg-blue-600 text-white"
+            type="submit"
+          >
+            Login
+          </button></a
+        >
+      </div>
+
+      <form
+        class="flex justify-center w-full lg:w-2/3 text-left"
+        action="#"
+        method="post"
+        th:action="@{/registration/register}"
+        th:object="${user}"
+        th:unless="${param.success}"
+      >
+        <div
+          class="flex shadow-md shadow-neutral-400 w-7/12 lg:w-1/2 p-10 lg:p-5 bg-slate-50 rounded-lg flex-col gap-5 lg:gap-2 border border-neutral-300"
+        >
+          <h1 class="font-bold text-5xl lg:text-2xl pb-10 lg:pb-3">
+            Register Below
+          </h1>
+          <label class="font-medium text-3xl lg:text-base" for="firstName"
+            >First Name</label
+          >
+          <input
+            type="text"
+            id="firstName"
+            autofocus="autofocus"
+            required
+            name="firstName"
+            th:field="*{firstName}"
+            class="border p-1"
+          />
+          <label class="font-medium text-3xl lg:text-base" for="lastName"
+            >Last Name</label
+          >
+          <input
+            type="text"
+            id="lastName"
+            autofocus="autofocus"
+            required
+            name="lastName"
+            th:field="*{lastName}"
+            class="border p-1"
+          />
+          <label class="font-medium text-3xl lg:text-base" for="email"
+            >Email</label
+          >
+          <span th:errors="*{email}" class="text-red-800 p-2 font-semibold"
+            >Please enter a valid email</span
+          >
+          <input
+            type="email"
+            id="email"
+            autofocus="autofocus"
+            required
+            name="email"
+            th:field="*{email}"
+            class="border p-1"
+          />
+          <label class="font-medium text-3xl lg:text-base" for="password"
+            >Password</label
+          >
+          <input
+            type="password"
+            id="password"
+            autofocus="autofocus"
+            required
+            name="password"
+            th:field="*{password}"
+            class="border p-1"
+          />
+          <label
+            class="font-medium text-3xl lg:text-base"
+            for="matchingPassword"
+            >Repeat password</label
+          >
+          <input
+            type="password"
+            id="matchingPassword"
+            autofocus="autofocus"
+            required
+            name="matchingPassword"
+            th:field="*{matchingPassword}"
+            class="border p-1"
+          />
+          <button
+            class="border border-blue-600 text-2xl lg:text-base bg-blue-500 px-5 py-2 rounded-md font-semibold hover:bg-blue-600 text-white"
+            type="submit"
+          >
+            Register
+          </button>
+          <div class="flex justify-between lg:pt-2 pt-3">
+            <span class="text-base lg:text-sm text-slate-500"
+              >Registered already?
+              <a class="underline text-blue-500" href="/login"
+                >Login here</a
+              ></span
+            >
+            <span class="text-base lg:text-sm text-neutral-800 underline"
+              ><a href="/">Return Home</a></span
+            >
+          </div>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>

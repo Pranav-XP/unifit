@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-blue-300">
+    <main class="flex flex-col items-center justify-center w-screen h-screen">
+      <div
+        class="bg-red-400 m-5 p-5 rounded-md font-bold text-neutral-800 border border-red-800"
+        th:if="${param.error != null}"
+      >
+        Incorrect credentials!
+      </div>
+      <form
+        class="flex justify-center w-full lg:w-2/3 text-left"
+        action="#"
+        method="post"
+        th:action="@{/login}"
+      >
+        <div
+          class="flex shadow-md shadow-neutral-400 w-7/12 lg:w-1/2 p-10 lg:p-5 bg-slate-50 rounded-lg flex-col gap-5 lg:gap-2 border border-neutral-300"
+        >
+          <label class="font-medium text-3xl lg:text-base" for="email"
+            >Email</label
+          >
+          <input
+            type="email"
+            id="email"
+            autofocus="autofocus"
+            required
+            name="email"
+            class="border p-1"
+          />
+          <label class="font-medium text-3xl lg:text-base" for="password"
+            >Password</label
+          >
+          <input
+            type="password"
+            id="password"
+            autofocus="autofocus"
+            required
+            name="password"
+            class="border p-1"
+          />
+          <button
+            class="border border-blue-600 text-2xl lg:text-base bg-blue-500 px-5 py-2 rounded-md font-semibold hover:bg-blue-600 text-white"
+            type="submit"
+          >
+            Login
+          </button>
+          <div class="flex justify-between lg:pt-2 pt-3">
+            <span class="text-base lg:text-sm text-slate-500"
+              >No account?
+              <a class="underline text-blue-500" href="/registration"
+                >Register</a
+              ></span
+            >
+            <span class="text-base lg:text-sm text-neutral-800 underline"
+              ><a href="/">Return Home</a></span
+            >
+          </div>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>
