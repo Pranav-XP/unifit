@@ -31,15 +31,7 @@ public class BookingService implements IBookingService {
     private final FacilityRepository facilityRepository;
     private final FacilityService facilityService;
     private final UserService userService;
-    private final EmailService emailService;
     private final NotificationService notificationService;
-
-    //EMAIL TEMPLATE ID'S DO NOT TOUCH
-    @Value("${sendgrid.template.booking}")
-    private String bookingEmailTemplate;
-
-    @Value("${sendgrid.template.cancellation}")
-    private String cancelledEmailTemplate;
 
     @Override
     public Booking createBooking(BookingFormDTO form) {

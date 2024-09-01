@@ -15,9 +15,6 @@ import java.util.Map;
 @Service
 @Component
 public class EmailService {
-    @Value("${sendgrid.apikey}")
-    private String apiKey;
-
 
 
     private Map<String,String> createBookingEmailPayload(Booking booking){
