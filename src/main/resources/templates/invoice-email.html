@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            background-color: #ffffff;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #dddddd;
+            max-width: 600px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            max-width: 150px;
+        }
+        .content {
+            margin-bottom: 20px;
+        }
+        .content h1 {
+            font-size: 24px;
+            color: #333333;
+        }
+        .content p {
+            font-size: 16px;
+            color: #666666;
+            line-height: 1.5;
+        }
+        .invoice-details {
+            margin-bottom: 20px;
+        }
+        .invoice-details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .invoice-details th, .invoice-details td {
+            padding: 10px;
+            border: 1px solid #dddddd;
+            text-align: left;
+        }
+        .invoice-details th {
+            background-color: #f2f2f2;
+        }
+        .total {
+            text-align: right;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333333;
+        }
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #999999;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        Logo Goes Here
+    </div>
+    <div class="content">
+        <h1>Booking Invoice</h1>
+        <p>Dear <span th:text="${customerName}">Customer Name</span>,</p>
+        <p>Thank you for booking with UniFit! Below are the details of your booking:</p>
+    </div>
+    <div class="invoice-details">
+        <table>
+            <thead>
+            <tr>
+                <th>Facility</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Facility Name</td>
+                <td>Date</td>
+                <td>Time</td>
+                <td>Price</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="total">Total: <span th:text="${totalPrice}">$0.00</span></p>
+    <div class="footer">
+        <p>UniFit | 123 Fitness St, Suva, Fiji</p>
+        <p>© 2024 UniFit. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>
