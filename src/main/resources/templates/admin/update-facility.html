@@ -99,7 +99,7 @@
               >
                 <!-- Add options based on your enum values -->
                 <option
-                  th:each="status : ${T(dev.cocoa.uspgymbooking.facility.FacilityStatus).values()}"
+                  th:each="status : ${T(dev.forge.unifit.facility.FacilityStatus).values()}"
                   th:value="${status}"
                   th:text="${status.getDisplayName()}"
                 ></option>
@@ -132,6 +132,7 @@
                 type="time"
                 id="weekdayOpeningTime"
                 name="weekdayOpeningTime"
+                th:value="*{weekdayOpeningTime}"
                 th:field="*{weekdayOpeningTime}"
                 class="w-full px-3 py-2 border rounded-md"
               />
@@ -147,6 +148,7 @@
                 type="time"
                 id="weekdayClosingTime"
                 name="weekdayClosingTime"
+                th:value="*{weekdayClosingTime}"
                 th:field="*{weekdayClosingTime}"
                 class="w-full px-3 py-2 border rounded-md mb-5"
               />
@@ -163,6 +165,7 @@
                 type="time"
                 id="weekendOpeningTime"
                 name="weekendOpeningTime"
+                th:value="*{weekendOpeningTime}"
                 th:field="*{weekendOpeningTime}"
                 class="w-full px-3 py-2 border rounded-md"
               />
@@ -178,6 +181,7 @@
                 type="time"
                 id="weekendClosingTime"
                 name="weekendClosingTime"
+                th:value="*{weekendClosingTime}"
                 th:field="*{weekendClosingTime}"
                 class="w-full px-3 py-2 border rounded-md"
               />
