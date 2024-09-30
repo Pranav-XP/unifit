@@ -1,16 +1,82 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Booking</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-gray-100">
-    <!--Header Fragment-->
-    <div th:replace="fragments/header :: header"></div>
+<head>
+  <meta charset="UTF-8" />
+  <title>Booking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<!--Header Fragment-->
+<div th:replace="fragments/header :: header"></div>
 
-    <main class="mt-[88px] p-10">
-      <h1>Booking View Under Construction</h1>
-    </main>
-  </body>
+<main class="mt-[88px] p-10">
+  <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mt-6 mb-8">
+    Select a Facility
+  </h2>
+  <div
+          class="bg-red-400 m-5 p-5 rounded-md font-bold text-neutral-800 border border-red-800"
+          th:if="${param.error != null}"
+  >
+    Facility is unavailable!
+  </div>
+  <!-- Facilities Container -->
+  <div class="container mx-auto mt-8">
+    <!-- Facility Cards -->
+    <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+    >
+      <!-- Iterate over facilities and generate cards -->
+      <div
+              th:each="facility : ${facilities}"
+              class="bg-white rounded-lg overflow-hidden shadow-md"
+      >
+        <img
+                th:src="${facility.imageUrl}"
+                alt="Facility Image"
+                class="w-full h-32 object-cover"
+        />
+        <div class="p-6">
+          <div class="flex justify-between items-center">
+            <h2
+                    class="text-xl font-semibold mb-2"
+                    th:text="${facility.name}"
+            >
+              Name
+            </h2>
+            <div
+                    th:text="${facility.status.getDisplayName()}"
+                    th:class="${T(dev.forge.unifit.facility.FacilityStatus).getStatusColor(facility.status)}"
+            ></div>
+          </div>
+          <p class="mb-4 font-semibold">
+            Rate p/hr:
+            <span
+                    class="font-normal"
+                    th:text="'$'+${facility.facilityType.rate}"
+            ></span>
+          </p>
+          <p class="mb-2">
+            <span class="font-bold">Weekdays:</span>
+            <span
+                    th:text="${#temporals.format(facility.weekdayOpeningTime, 'h:mma')}+ ' to ' + ${#temporals.format(facility.weekdayClosingTime, 'h:mma')}"
+            ></span>
+          </p>
+          <p class="mb-2">
+            <span class="font-bold">Weekends:</span>
+            <span
+                    th:text="${#temporals.format(facility.weekendOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekendClosingTime, 'h:mma')}"
+            ></span>
+          </p>
+          <a
+                  th:if="${facility.status == T(dev.forge.unifit.facility.FacilityStatus).AVAILABLE}"
+                  th:href="@{/booking/{id}(id=${facility.id})}"
+                  class="bg-blue-500 w-full font-medium text-center text-white p-2 rounded-md hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue mt-4 inline-block"
+          >Select</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
 </html>

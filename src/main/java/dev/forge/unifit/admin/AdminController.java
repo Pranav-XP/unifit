@@ -82,6 +82,8 @@ public class AdminController {
 
     @PostMapping("/facilities/update")
     public String updateFacility(@ModelAttribute("facility") Facility facility){
+
+
         facilityService.saveFacility(facility);
 
         return "redirect:/admin/facilities";

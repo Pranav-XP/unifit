@@ -23,7 +23,7 @@
           <!-- Add your user's booking information here -->
           <p
             th:text="${booking.status.getDisplayName()}"
-            th:class="${T(dev.cocoa.uspgymbooking.booking.BookingStatus).getStatusColor(booking.status)}"
+            th:class="${T(dev.forge.unifit.booking.BookingStatus).getStatusColor(booking.status)}"
           >
             Status
           </p>
