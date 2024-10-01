@@ -8,6 +8,7 @@ import dev.forge.unifit.facility.FacilityService;
 import dev.forge.unifit.notification.NotificationService;
 import dev.forge.unifit.user.User;
 import dev.forge.unifit.user.UserService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,7 @@ public class BookingService implements IBookingService {
     private final FacilityService facilityService;
     private final UserService userService;
     private final NotificationService notificationService;
+    private final EmailService emailService;
 
     @Override
     public Booking createBooking(BookingFormDTO form) {
@@ -53,6 +55,11 @@ public class BookingService implements IBookingService {
             notification.setCustomerName(booking.getUser().getFirstName());
             notification.setFacilityName(booking.getFacility().getName());
             notificationService.notifyAdmin(notification);
+        try {
+            emailService.sendBookingInvoice(booking.getUser().getEmail(),booking.getUser().getFirstName(),booking,35);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Email not sent");
+        }
 
         return savedBooking;
     }
