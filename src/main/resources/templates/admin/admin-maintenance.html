@@ -16,7 +16,98 @@
     <div th:replace="fragments/admin-header.html :: header"></div>
     <div th:replace="fragments/sidebar :: aside"></div>
     <main class="p-10 lg:ml-[190px] lg:pt-10 pt-20">
-      Maintenance Scheduling View Under Construction
+      <h1 class="text-4xl lg:text-5xl font-bold py-10">Manage Schedule</h1>
+      <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mt-6 mb-8">
+        Select a Facility
+      </h2>
+      <!-- Facilities Container -->
+      <div class="container mx-auto mt-8">
+        <!-- Facility Cards -->
+        <div
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+        >
+          <!-- Iterate over facilities and generate cards -->
+          <div
+                  th:each="facility : ${facilities}"
+                  class="bg-white rounded-lg overflow-hidden shadow-md"
+          >
+            <div class="p-6">
+              <div class="flex justify-between items-center">
+                <h2
+                        class="text-xl font-semibold mb-2"
+                        th:text="${facility.name}"
+                >
+                  Name
+                </h2>
+                <div
+                        th:text="${facility.status.getDisplayName()}"
+                        th:class="${T(dev.forge.unifit.facility.FacilityStatus).getStatusColor(facility.status)}"
+                ></div>
+              </div>
+              <p class="mb-2">
+                <span class="font-bold">Weekdays:</span>
+                <span
+                        th:text="${#temporals.format(facility.weekdayOpeningTime, 'h:mma')}+ ' to ' + ${#temporals.format(facility.weekdayClosingTime, 'h:mma')}"
+                ></span>
+              </p>
+              <p class="mb-2">
+                <span class="font-bold">Weekends:</span>
+                <span
+                        th:text="${#temporals.format(facility.weekendOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekendClosingTime, 'h:mma')}"
+                ></span>
+              </p>
+              <a
+                      th:href="@{/admin/maintenance/{id}(id=${facility.id})}"
+                      class="bg-blue-500 w-full font-medium text-center text-white p-2 rounded-md hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue mt-4 inline-block"
+              >Schedule</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mt-6 mb-8">
+        Maintenance Schedule
+      </h2>
+
+      <div class="overflow-x-auto bg-white rounded-md shadow-md mt-5 p-5">
+        <table class="min-w-full">
+          <thead>
+          <tr>
+            <th class="py-2 px-1 border-b text-left">ID</th>
+            <th class="py-2 px-1 border-b text-left">Facility</th>
+            <th class="py-2 px-1 border-b text-left">Date</th>
+            <th class="py-2 px-1 border-b text-left">Start Time</th>
+            <th class="py-2 px-1 border-b text-left">End Time</th>
+            <!-- Add more columns as needed -->
+          </tr>
+          </thead>
+          <tbody id="bookingTable">
+          <!-- Thymeleaf iteration over bookings -->
+          <tr th:each="schedule : ${schedules}">
+            <td class="py-2 px-2 border-b" th:text="${schedule.id}"></td>
+            <td
+                    class="py-2 px-2 border-b"
+                    th:text="${schedule.facility.name}"
+            ></td>
+            <td
+                    class="py-2 px-2 border-b"
+                    th:text="${schedule.bookedDate}"
+            ></td>
+            <td class="py-2 px-2 border-b" th:text="${schedule.start}"></td>
+            <td class="py-2 px-2 border-b" th:text="${schedule.end}"></td>
+
+            <td class="py-2 px-2 border-b">
+              <a
+                      th:href="@{'/admin/booking/' + ${schedule.id}}"
+                      class="flex gap-1 font-semibold hover:bg-blue-200 bg-blue-100 justify-center p-1 rounded"
+              >View</a
+              >
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </main>
   </body>
 </html>
