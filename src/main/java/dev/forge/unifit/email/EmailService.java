@@ -2,51 +2,50 @@ package dev.forge.unifit.email;
 
 
 import dev.forge.unifit.booking.Booking;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
-
-import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 @Service
-@Component
 public class EmailService {
 
+    private final JavaMailSender mailSender;
 
-    private Map<String,String> createBookingEmailPayload(Booking booking){
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mma");
-        BookingEmailDTO bookingPayload;
-        bookingPayload = new BookingEmailDTO();
+    private final TemplateEngine templateEngine;
 
-        String customerName = booking.getUser().getFirstName() + " " + booking.getUser().getLastName();
-
-        bookingPayload.setBookingId(booking.getId().toString());
-        bookingPayload.setCustomerName(customerName);
-        bookingPayload.setBookingDate(booking.getBookedDate().format(dateFormatter));
-        bookingPayload.setBookingStart(booking.getStart().format(timeFormatter));
-        bookingPayload.setBookingEnd(booking.getEnd().format(timeFormatter));
-        bookingPayload.setFacilityName(booking.getFacility().getName());
-        bookingPayload.setStatus(booking.getStatus().getDisplayName());
-        bookingPayload.setTotal(booking.getFacility().getFacilityType().getRate().toString());
-
-        Map<String, String> data = new HashMap<>();
-
-        // Add firstname
-        data.put("bookingId", bookingPayload.getBookingId());
-        data.put("customerName",bookingPayload.getCustomerName());
-        data.put("bookingDate",bookingPayload.getBookingDate());
-        data.put("facilityName",bookingPayload.getFacilityName());
-        data.put("bookingStart",bookingPayload.getBookingStart());
-        data.put("status",bookingPayload.getStatus());
-        data.put("bookingEnd",bookingPayload.getBookingEnd());
-        data.put("total",bookingPayload.getTotal());
-
-        return data;
+    public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
+        this.mailSender = mailSender;
+        this.templateEngine = templateEngine;
     }
 
+    public void sendBookingInvoice(String recipientEmail, String customerName, Booking booking, double totalPrice) throws MessagingException {
+        // Create email
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = null;
+        try {
+            helper = new MimeMessageHelper(message, true);
+        } catch (MessagingException e) {
+            throw new RuntimeException("MesseageHelper could not be created", e);
+        }
+
+        helper.setTo(recipientEmail);
+        helper.setSubject("Your UniFit Booking Invoice");
+
+        // Hardcoded mock data
+        Context context = new Context();
+        context.setVariable("customerName", customerName);
+        context.setVariable("booking", booking);
+        context.setVariable("totalPrice", "TEST PRICE HOLDER");
+
+        // Load and populate the Thymeleaf template
+        String htmlContent = templateEngine.process("invoice-email", context);
+        helper.setText(htmlContent, true);
+
+        // Send the email
+        mailSender.send(message);
+    }
 }
