@@ -5,7 +5,180 @@
 </head>
 <body>
 <div th:replace="~{fragments/admin-dashboard.html}">
-  <h1 th:fragment="content"> ADMIN DASHBOARD UNDER CONSTRUCTION</h1>
+  <div th:fragment="content">
+    <h1 class="text-3xl lg:text-5xl px-5 py-5 font-bold">Dashboard Home</h1>
+    <!-- Table -->
+    <h2 class="text-2xl lg:text-3xl px-5 py-5 font-bold">Weekly Outlook</h2>
+    <div class="overflow-x-auto bg-white rounded-md shadow-md p-5">
+      <div class="mb-4">
+        <label for="customerNameSearch" class="block font-semibold mb-1"
+        >Search by Customer Name:</label
+        >
+        <input
+                type="text"
+                id="customerNameSearch"
+                class="w-full p-2 border rounded-md"
+        />
+      </div>
+      <table class="min-w-full">
+        <thead>
+        <tr>
+          <th class="py-2 px-1 border-b text-left">ID</th>
+          <th class="py-2 px-1 border-b text-left">Customer</th>
+          <th class="py-2 px-1 border-b text-left">Facility</th>
+          <th class="py-2 px-1 border-b text-left">Date</th>
+          <th class="py-2 px-1 border-b text-left">Start Time</th>
+          <th class="py-2 px-1 border-b text-left">End Time</th>
+          <th class="py-2 px-1 border-b text-left">Status</th>
+          <th class="py-2 px-1 border-b text-left"></th>
+          <!-- Add more columns as needed -->
+        </tr>
+        </thead>
+        <tbody id="bookingTable">
+        <!-- Thymeleaf iteration over bookings -->
+        <tr th:each="booking : ${bookings}">
+          <td class="py-2 px-2 border-b" th:text="${booking.id}"></td>
+          <td
+                  class="py-2 px-2 border-b"
+                  th:text="${booking.user.firstName + ' ' + booking.user.lastName}"
+          ></td>
+          <td
+                  class="py-2 px-2 border-b"
+                  th:text="${booking.facility.name}"
+          ></td>
+          <td
+                  class="py-2 px-2 border-b"
+                  th:text="${booking.bookedDate}"
+          ></td>
+          <td class="py-2 px-2 border-b" th:text="${booking.start}"></td>
+          <td class="py-2 px-2 border-b" th:text="${booking.end}"></td>
+          <td
+                  class="py-2 px-2"
+                  th:class="${T(dev.forge.unifit.booking.BookingStatus).getStatusColor(booking.status)}"
+                  th:text="${booking.status.getDisplayName()}"
+          ></td>
+
+          <td class="py-2 px-2 border-b">
+            <a
+                    th:href="@{'/admin/booking/' + ${booking.id}}"
+                    class="flex gap-1 font-semibold hover:bg-blue-200 bg-blue-100 justify-center p-1 rounded"
+            ><i data-lucide="clipboard-edit" class="w-5"></i> Update</a
+            >
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="w-full">
+      <h2 class="text-2xl lg:text-3xl px-5 py-5 font-bold">
+        Bookings by Facility
+      </h2>
+      <canvas id="bookingChart" width="500" height="200"></canvas>
+    </div>
+  </div>
+
 </div>
 </body>
+<script th:inline="javascript">
+  lucide.createIcons();
+  /*<![CDATA[*/
+  // Get chart data from Thymeleaf model
+  var chartData = /*[[${chartData}]]*/ {};
+
+  // Convert chartData to arrays for labels and data
+  var labels = Object.keys(chartData);
+  var data = Object.values(chartData);
+
+  // Get the canvas element
+  var ctx = document.getElementById("bookingChart").getContext("2d");
+
+  // Create the chart
+  var myChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Number of Bookings",
+          data: data,
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+  /*]]>*/
+</script>
+<script>
+  const socket = new SockJS("/ws");
+  const stompClient = Stomp.over(socket);
+
+  stompClient.connect({}, () => {
+    stompClient.subscribe("/topic/admin", (notification) => {
+      // Handle the incoming notification
+      const message = JSON.parse(notification.body);
+      console.log("Recieved Booking Notification:", message);
+      // Display the notification to the admin
+      displayNotification(message);
+    });
+  });
+
+  function displayNotification(notification) {
+    // Extract booking information
+    let bookingId = notification.bookingId;
+    let customerName = notification.customerName;
+    let facilityName = notification.facilityName;
+
+    // Create a message for the toast
+    var message = `${customerName} has made a booking at ${facilityName}.`;
+
+    // Show a toast notification
+    Toastify({
+      text: message,
+      duration: 5000, // Adjust duration as needed
+      close: true,
+      gravity: "top", // Position of the toast
+      position: "right", // Position of the toast
+      className: "font-semibold bg-blue-500 hover:bg-blue-600",
+      destination: `/admin/booking/${bookingId}`,
+    }).showToast();
+  }
+
+  function searchTable() {
+    // Get the search input value
+    var input = document.getElementById("customerNameSearch");
+    var filter = input.value.toUpperCase();
+
+    // Get the table body and rows
+    var table = document.getElementById("bookingTable");
+    var rows = table.getElementsByTagName("tr");
+
+    // Loop through all table rows, and hide those that don't match the search query
+    for (var i = 0; i < rows.length; i++) {
+      var customerName = rows[i].getElementsByTagName("td")[1]; // Adjust index based on your actual table structure
+
+      if (customerName) {
+        var textValue = customerName.textContent || customerName.innerText;
+
+        if (textValue.toUpperCase().indexOf(filter) > -1) {
+          rows[i].style.display = "";
+        } else {
+          rows[i].style.display = "none";
+        }
+      }
+    }
+  }
+</script>
+<script
+        type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/toastify-js"
+></script>
 </html>
