@@ -19,7 +19,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 import org.springframework.web.multipart.MultipartFile;
+
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -31,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -159,11 +164,18 @@ public class AdminController {
     }
 
     @GetMapping("/booking/{id}")
-    public String updateBookingPage(@PathVariable("id") Long bookingId, Model model) {
-        Booking userBooking = bookingService.getBooking(bookingId);
-        model.addAttribute("booking",userBooking);
+    public String updateBookingPage(@PathVariable("id") Long bookingId, Model model, RedirectAttributes redirectAttributes) {
+        Optional<Booking> booking = bookingService.getBooking(bookingId);
 
-        return "admin/update-booking";
+        if (booking.isPresent()) {
+            model.addAttribute("booking", booking.get());
+            return "admin/update-booking";
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Booking ID not found.");
+            return "redirect:/admin/booking";
+        }
+
+
     }
 
     @GetMapping("/facilities/{id}")
@@ -220,35 +232,4 @@ public class AdminController {
                         Collectors.counting()
                 ));
     }
-
-  /*  public static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
-    private final List<ImageInfo> uploadedImages = new ArrayList<>();
-
-
-    @PostMapping("/admin/facility/add")
-    public String uploadImage(Model model, @RequestParam("image") MultipartFile file) throws IOException {
-        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, file.getOriginalFilename());
-        Files.write(fileNameAndPath, file.getBytes());
-
-        // Prepare image info and add to the list
-        String imagePath = "/uploads/" + file.getOriginalFilename();
-        ImageInfo imageInfo = new ImageInfo(imagePath);
-        uploadedImages.add(imageInfo);
-
-        // Add the updated list of images to the model
-        model.addAttribute("uploadedImages", uploadedImages);
-        model.addAttribute("msg", "Image uploaded successfully!");
-
-        // Return to the upload form
-        return "admin/admin-facilities"; // or redirect to upload page if you prefer
-    }
-
-    @GetMapping("/facilities")
-    public String viewImages(Model model) {
-        // Pass the list of uploaded images to the view
-        model.addAttribute("uploadedImages", uploadedImages);
-        return "facilities"; // Return the view page
-    }
-
-*/
 }

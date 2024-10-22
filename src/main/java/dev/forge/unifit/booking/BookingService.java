@@ -9,20 +9,20 @@ import dev.forge.unifit.notification.NotificationService;
 import dev.forge.unifit.user.User;
 import dev.forge.unifit.user.UserService;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -36,13 +36,20 @@ public class BookingService implements IBookingService {
     private final EmailService emailService;
 
     @Override
+    @Transactional
     public Booking createBooking(BookingFormDTO form) {
         Booking booking = new Booking();
         User user = userService.getUser(form.getUserId());
         booking.setUser(user);
         Facility facility = facilityService.getFacility(form.getFacilityId());
-        booking.setFacility(facility);
 
+
+        Optional<Booking> existingBooking = bookingRepository.findBookingByBookedDateAndStartAndFacility(form.getBookedDate(),form.getStart(),facility.getId());
+        if(existingBooking.isPresent()){
+            throw new IllegalStateException("The selected timeslot is already booked");
+        }
+
+        booking.setFacility(facility);
         booking.setBookedDate(form.getBookedDate());
         booking.setStart(form.getStart());
         booking.setEnd(form.getEnd());
@@ -118,8 +125,8 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public Booking getBooking(Long id) {
-        return bookingRepository.findById(id).get();
+    public Optional<Booking> getBooking(Long id) {
+        return bookingRepository.findById(id);
     }
 
     @Override

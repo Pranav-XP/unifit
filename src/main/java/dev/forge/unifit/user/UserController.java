@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -51,9 +52,9 @@ public class UserController {
     @GetMapping("/user/bookings/{id}")
     public String usersBooking(Model model,@AuthenticationPrincipal UserDetails authUser,@PathVariable("id")Long bookingId){
         User user = userRepository.findByEmail(authUser.getUsername());
-        Booking booking = bookingService.getBooking(bookingId);
+        Optional<Booking> booking = bookingService.getBooking(bookingId);
 
-        if(booking.getUser() != user){
+        if(booking.get().getUser() != user){
             return "invalid";
         }
 

@@ -1,12 +1,12 @@
 package dev.forge.unifit.booking;
 
-import dev.forge.unifit.facility.FacilityStatus;
 import dev.forge.unifit.user.User;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface IBookingService {
     Booking createBooking(BookingFormDTO booking);
@@ -16,7 +16,7 @@ public interface IBookingService {
     List<Booking> getBookingByStatus(BookingStatus status);
     List<Booking> getBookings();
 
-    Booking getBooking(Long id);
+    Optional<Booking> getBooking(Long id);
 
     List<Booking> getBookingsByUser(User user);
     List<LocalTime> getAvailableTimes(Long facilityId, LocalDate date);
