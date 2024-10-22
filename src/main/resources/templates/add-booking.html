@@ -119,32 +119,30 @@
       });
 
       // Delegate the click event to the parent container
-      document
-        .getElementById("availableTimes")
-        .addEventListener("click", function (event) {
-          if (event.target.classList.contains("time-slot")) {
-            // Get the clicked time from the div's data-time attribute
-            let clickedTime = event.target.getAttribute("data-time");
+      document.getElementById("availableTimes").addEventListener("click", function (event) {
+        if (event.target.classList.contains("time-slot")) {
+          // Get the clicked time from the div's data-time attribute
+          let clickedTime = event.target.getAttribute("data-time");
 
-            // Set the booking start and end time in the form
-            document.getElementById("startTime").value = clickedTime;
-            // You can set the end time based on your business logic
+          // Set the start time
+          document.getElementById("startTime").value = clickedTime;
 
-            // For example, add one hour to the clicked time
-            let endDateTime = new Date(`2000-01-01 ${clickedTime}`);
-            endDateTime.setHours(endDateTime.getHours() + 1);
+          // Calculate end time (1 hour later)
+          let endDateTime = new Date(`2000-01-01T${clickedTime}`);
+          endDateTime.setHours(endDateTime.getHours() + 1);
 
-            document.getElementById("endTime").value =
-              endDateTime.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              });
-          }
-        });
+          // Format end time as HH:mm
+          const endHours = endDateTime.getHours().toString().padStart(2, '0');
+          const endMinutes = endDateTime.getMinutes().toString().padStart(2, '0');
+          const formattedEndTime = `${endHours}:${endMinutes}`;
+
+          document.getElementById("endTime").value = formattedEndTime;
+        }
+      });
     });
 
     function fetchAvailableTimes(selectedDate, facilityId) {
-      // Make a fetch request to your Spring Boot endpoint
+      // Make a fetch request to Spring Boot endpoint
       fetch(
         `/api/v1/availableTimes?date=${selectedDate}&facilityId=${facilityId}`,
       )
