@@ -2,6 +2,7 @@ package dev.forge.unifit.facility;
 
 import dev.forge.unifit.facility.facilitytype.FacilityType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -22,9 +23,11 @@ public class Facility {
     private Long id;
 
     @Column(unique = true)
+    @Size(max = 100, message = "Description must not exceed 100 characters")
     private String name;
 
     @Column(columnDefinition = "LONGTEXT")
+    @Size(max = 300, message = "Description must not exceed 300 characters")
     private String description;
 
     private String imageUrl;

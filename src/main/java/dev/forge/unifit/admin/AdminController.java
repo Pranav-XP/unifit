@@ -19,9 +19,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -115,10 +125,15 @@ public class AdminController {
     }
 
     @PostMapping("/facilities/add")
-    public String addFacility(@ModelAttribute Facility facility, @RequestParam("facilityTypeId") Long facilityTypeId){
+    //UPDATE THE PARAMETERS TO ACCOUNT FOR MULTIPART FILE
+    public String addFacility(@ModelAttribute Facility facility, @RequestParam("facilityTypeId") Long facilityTypeId, @RequestParam("image") MultipartFile file){
         FacilityType selected = facilityTypeService.getFacilityTypeById(facilityTypeId);
         facility.setFacilityType(selected);
-        facilityService.addFacility(facility);
+        try {
+            facilityService.addFacility(facility,file);
+        } catch (IOException e) {
+            throw new RuntimeException("ERROR: Could not save facility");
+        }
         return "redirect:/admin/facilities";
     }
 
