@@ -1,11 +1,14 @@
 package dev.forge.unifit.facility;
 
 
-import dev.forge.unifit.facility.facilitytype.FacilityType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,8 +27,18 @@ public class FacilityService implements IFacilityService {
             return facility.get();
     }
 
+    public static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
+
+
     @Override
-    public Facility addFacility(Facility facility) {
+    public Facility addFacility(Facility facility,MultipartFile file) throws IOException {
+        //ADD IMAGE LOGIC
+        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, file.getOriginalFilename());
+        Files.write(fileNameAndPath, file.getBytes());
+
+        // Prepare image info and add to the list
+        String imagePath = "/uploads/" + file.getOriginalFilename();
+        facility.setImageUrl(imagePath);
         facility.setStatus(FacilityStatus.AVAILABLE);
         return facilityRepository.save(facility);
     }

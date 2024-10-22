@@ -19,8 +19,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -113,10 +120,15 @@ public class AdminController {
     }
 
     @PostMapping("/facilities/add")
-    public String addFacility(@ModelAttribute Facility facility, @RequestParam("facilityTypeId") Long facilityTypeId){
+    //UPDATE THE PARAMETERS TO ACCOUNT FOR MULTIPART FILE
+    public String addFacility(@ModelAttribute Facility facility, @RequestParam("facilityTypeId") Long facilityTypeId, @RequestParam("image") MultipartFile file){
         FacilityType selected = facilityTypeService.getFacilityTypeById(facilityTypeId);
         facility.setFacilityType(selected);
-        facilityService.addFacility(facility);
+        try {
+            facilityService.addFacility(facility,file);
+        } catch (IOException e) {
+            throw new RuntimeException("ERROR: Could not save facility");
+        }
         return "redirect:/admin/facilities";
     }
 
@@ -208,4 +220,35 @@ public class AdminController {
                         Collectors.counting()
                 ));
     }
+
+  /*  public static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
+    private final List<ImageInfo> uploadedImages = new ArrayList<>();
+
+
+    @PostMapping("/admin/facility/add")
+    public String uploadImage(Model model, @RequestParam("image") MultipartFile file) throws IOException {
+        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, file.getOriginalFilename());
+        Files.write(fileNameAndPath, file.getBytes());
+
+        // Prepare image info and add to the list
+        String imagePath = "/uploads/" + file.getOriginalFilename();
+        ImageInfo imageInfo = new ImageInfo(imagePath);
+        uploadedImages.add(imageInfo);
+
+        // Add the updated list of images to the model
+        model.addAttribute("uploadedImages", uploadedImages);
+        model.addAttribute("msg", "Image uploaded successfully!");
+
+        // Return to the upload form
+        return "admin/admin-facilities"; // or redirect to upload page if you prefer
+    }
+
+    @GetMapping("/facilities")
+    public String viewImages(Model model) {
+        // Pass the list of uploaded images to the view
+        model.addAttribute("uploadedImages", uploadedImages);
+        return "facilities"; // Return the view page
+    }
+
+*/
 }

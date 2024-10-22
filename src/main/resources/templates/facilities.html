@@ -16,21 +16,23 @@
           <!-- Facility Information -->
           <div class="flex flex-col gap-8">
             <!-- Iterate over facilities and generate information sections -->
+
             <div
-              th:each="facility : ${facilities}"
+               th:each="facility : ${facilities}"
               class="bg-white rounded-lg border overflow-hidden shadow-md flex flex-col sm:flex-row"
             >
-              <!-- Image Section -->
+
               <div
                 class="w-full sm:w-1/2 h-auto overflow-hidden rounded-l-lg mb-4 sm:mb-0"
               >
-                <!-- Adjusted width for small screens -->
+
                 <img
                   th:src="${facility.imageUrl}"
                   alt="Facility Image"
                   class="w-full h-full object-cover"
                 />
               </div>
+
               <!-- Text Section -->
               <div class="w-full sm:w-1/2 p-6">
                 <!-- Adjusted width for small screens -->

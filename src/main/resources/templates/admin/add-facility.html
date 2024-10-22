@@ -1,7 +1,29 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
   <title>UniFit | Admin</title>
+   <style>
+        .image-preview {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            margin: 5px;
+        }
+    </style>
+  <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 </head>
 <body>
 <div th:replace="~{fragments/admin-dashboard.html}">
@@ -16,6 +38,7 @@
             class="flex flex-col gap-3 px-4 md:px-10 w-full pb-10"
             th:object="${facility}"
             method="post"
+            enctype="multipart/form-data"
             th:action="@{/admin/facilities/add}"
     >
       <label for="name" class="text-gray-700 text-sm font-bold mb-2"
@@ -100,18 +123,16 @@
               required
       ></textarea>
 
-      <!-- Image URL Input -->
+
       <label for="image" class="text-gray-700 text-sm font-bold mb-2"
       >Image Url:</label
       >
-      <input
-              class="border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
-              type="url"
-              id="image"
-              name="image"
-              th:field="*{imageUrl}"
-              required
-      />
+      <div class="form-group">
+                <label for="image">Image</label>
+                <input type="file" name="image" accept="image/*" class="form-control-file" required onchange="previewImage(event)">
+            </div>
+            <img id="imagePreview" src="#" alt="Image Preview" class="image-preview" style="display: none;" />
+            <br>
 
       <!-- Opening and Closing Times -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
