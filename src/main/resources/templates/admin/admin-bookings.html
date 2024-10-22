@@ -6,12 +6,22 @@
 <body>
   <div th:replace="~{fragments/admin-dashboard.html}">
       <div th:fragment="content">
-          <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert" id="error-message">
               <span class="block sm:inline" th:text="${errorMessage}"></span>
-              <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-        <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 5.652a1 1 0 010 1.414l-4.243 4.243 4.243 4.243a1 1 0 01-1.414 1.414l-4.243-4.243-4.243 4.243a1 1 0 01-1.414-1.414l4.243-4.243-4.243-4.243a1 1 0 011.414-1.414l4.243 4.243 4.243-4.243a1 1 0 011.414 0z"/></svg>
+              <span class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer" onclick="removeErrorMessage()">
+        <!-- SVG for the close icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 6l8 8M6 14l8-8" />
+        </svg>
     </span>
           </div>
+
+          <script>
+              function removeErrorMessage() {
+                  // Hide the error message div
+                  document.getElementById('error-message').style.display = 'none';
+              }
+          </script>
           <h1 class="text-3xl lg:text-5xl px-5 py-5 font-bold">All Bookings</h1>
           <!-- Table -->
           <div class="overflow-x-auto bg-white rounded-md shadow-md p-5">
