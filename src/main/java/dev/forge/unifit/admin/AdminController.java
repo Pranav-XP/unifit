@@ -4,6 +4,8 @@ import dev.forge.unifit.booking.Booking;
 import dev.forge.unifit.booking.BookingFormDTO;
 import dev.forge.unifit.booking.BookingService;
 import dev.forge.unifit.booking.BookingStatus;
+import dev.forge.unifit.event.Event;
+import dev.forge.unifit.event.EventService;
 import dev.forge.unifit.facility.Facility;
 import dev.forge.unifit.facility.FacilityService;
 import dev.forge.unifit.facility.facilitytype.FacilityType;
@@ -19,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -35,6 +38,7 @@ public class AdminController {
     private final FacilityTypeService facilityTypeService;
     private final BookingService bookingService;
     private final UserService userService;
+    private final EventService eventService;
 
 
     @GetMapping
@@ -208,4 +212,53 @@ public class AdminController {
                         Collectors.counting()
                 ));
     }
+
+
+
+    @GetMapping("/events")
+    public String getEventsPage(Model model) {
+        List<Event> events = eventService.getAllEvents();
+        model.addAttribute("events", events);
+        return "admin/admin-event";
+    }
+
+    @GetMapping("/events/create")
+    public String createEventForm(Model model) {
+        Event event = new Event();
+        model.addAttribute("event", event);
+        List<Facility> facilities = facilityService.getAllFacilities();
+        model.addAttribute("facilities", facilities);
+        return "admin/admin-createEvent";
+    }
+
+    @PostMapping("/events/create")
+    public String createEvent(@ModelAttribute("event") Event event,
+                              @RequestParam("facilityId") Long facilityId,
+                              @RequestParam("image") MultipartFile imageFile) {
+        Facility facility = facilityService.getFacility(facilityId);
+        event.setFacility(facility);
+        eventService.saveEvent(event, imageFile);  // Now passing the image file to the service
+        return "redirect:/admin/events";
+    }
+
+    @GetMapping("/events/edit/{id}")
+    public String editEventForm(@PathVariable("id") Long eventId, Model model) {
+        Event event = eventService.getEventById(eventId);
+        model.addAttribute("event", event);
+        List<Facility> facilities = facilityService.getAllFacilities();
+        model.addAttribute("facilities", facilities);
+        return "admin/admin-editEvent";
+    }
+
+    @PostMapping("/events/update")
+    public String updateEvent(@ModelAttribute("event") Event event,
+                              @RequestParam("facilityId") Long facilityId,
+                              @RequestParam("image") MultipartFile imageFile) {
+        Facility facility = facilityService.getFacility(facilityId);
+        event.setFacility(facility);
+        eventService.saveEvent(event, imageFile);  // Now passing the image file to the service
+        return "redirect:/admin/events";
+    }
+
+
 }

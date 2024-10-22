@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Event</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body class="bg-gray-100">
+<div th:replace="fragments/admin-header.html :: header"></div>
+<div th:replace="fragments/sidebar :: aside"></div>
+
+<main class="p-10 lg:ml-[190px] lg:pt-10 pt-20">
+  <div class="container mx-auto px-5">
+    <section class="px-5 pb-5">
+      <h1 class="text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl px-5 py-6 lg:py-10 font-bold">Edit Event</h1>
+      <form class="flex flex-col gap-3 px-4 md:px-10 w-full pb-10"
+            th:action="@{/events/edit/{id}(id=${event.id})}"
+            th:object="${event}"
+            method="post"
+            enctype="multipart/form-data"> <!-- Add this line -->
+
+        <!-- Event Name Field -->
+        <div class="mb-4">
+          <label for="eventName" class="text-gray-700 text-sm font-bold mb-2">Event Name:</label>
+          <input
+                  class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+                  type="text"
+                  id="eventName"
+                  th:field="*{eventName}"
+                  required />
+        </div>
+
+        <div class="mb-4">
+          <label for="title" class="text-gray-700 text-sm font-bold mb-2">Title:</label>
+          <input
+                  class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+                  type="text"
+                  id="title"
+                  th:field="*{title}"
+                  required />
+        </div>
+
+        <label for="facility" class="text-gray-700 text-sm font-bold mt-4">Facility:</label>
+        <select class="border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+                name="facility"
+                id="facility"
+                th:field="*{facility.id}"
+                required>
+          <option value="" disabled selected>Select a Facility</option>
+          <th:block th:each="facility : ${facilities}">
+            <option
+                    th:value="${facility.id}"
+                    th:text="${facility.name}"></option>
+          </th:block>
+        </select>
+
+        <div class="mb-4">
+          <label for="description" class="text-gray-700 text-sm font-bold mb-2">Description:</label>
+          <textarea
+                  class="w-full px-3 py-2 border rounded-md"
+                  id="description"
+                  name="description"
+                  th:field="*{description}"
+                  rows="4"
+                  required></textarea>
+        </div>
+
+        <!-- Image Input -->
+        <label for="image" class="text-gray-700 text-sm font-bold mb-2">Image:</label>
+        <input
+                class="border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+                type="file"
+                id="image"
+                name="image" />
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div>
+            <label for="eventDateTime" class="text-gray-700 text-sm font-bold">Event Date and Time:</label>
+            <input class="border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+                   type="datetime-local"
+                   id="eventDateTime"
+                   th:field="*{eventDateTime}"
+                   th:value="${event.eventDateTime}"
+                   required />
+          </div>
+        </div>
+
+
+        <button class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue mt-4"
+                type="submit">Update Event</button>
+      </form>
+
+      <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    </section>
+  </div>
+</main>
+</body>
+</html>

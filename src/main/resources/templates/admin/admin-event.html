@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Events</title>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+<div th:replace="~{fragments/admin-dashboard.html}">
+  <div th:replace="~{fragments/sidebar.html}"></div>
+  <div th:fragment="content" class="container mx-auto px-5">
+
+    <h1 class="text-4xl lg:text-5xl font-bold py-10">Manage Events</h1>
+    <section class="px-5 pb-5">
+      <h2 class="text-2xl font-bold mb-4">Events </h2>
+
+      <table class="min-w-full border border-gray-300 mb-3">
+        <thead>
+        <tr class="bg-gray-200">
+          <th class="py-2 px-4 border-b text-left">Title</th>
+          <th class="py-2 px-4 border-b text-left">Description</th>
+          <th class="py-2 px-4 border-b text-left">Date & Time</th>
+          <th class="py-2 px-4 border-b text-left">Facility</th>
+          <th class="py-2 px-4 border-b text-left">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="event : ${events}" class="hover:bg-gray-100">
+          <td class="py-2 px-4 border-b" th:text="${event.title}"></td>
+          <td class="py-2 px-4 border-b" th:text="${event.description}"></td>
+          <td class="py-2 px-4 border-b" th:text="${event.eventDateTime}"></td>
+          <td class="py-2 px-4 border-b" th:text="${event.facility.name}"></td>
+          <td class="py-2 px-2 border-b">
+            <a th:href="@{/events/edit/{id}(id=${event.id})}" class="flex gap-1 font-semibold hover:bg-blue-200 bg-blue-100 justify-center p-1 rounded"
+            ><i data-lucide="clipboard-edit" class="w-5"></i>
+              Edit</a>
+            <a th:href="@{/events/delete/{id}(id=${event.id})}" class="flex gap-1 font-semibold hover:bg-blue-200 bg-blue-100 justify-center p-1 rounded"
+               onclick="return confirm('Are you sure you want to delete this event?');">Delete</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <a href="/events/create" class="mt-5 inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded">Create New Event</a>
+    </section>
+  </div>
+</div>
+</body>
+</html>
