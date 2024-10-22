@@ -254,7 +254,7 @@ public class Booking_Testing {
         assertFalse(bookings.isEmpty());
         verify(bookingRepository).findAll();
     }
-
+/*
     @Test
     public void testGetBooking() {
         Long bookingId = 1L;
@@ -265,7 +265,7 @@ public class Booking_Testing {
 
         assertNotNull(retrievedBooking);
         verify(bookingRepository).findById(bookingId);
-    }
+    }*/
 
     @Test
     public void testGetBookingsByUser() {

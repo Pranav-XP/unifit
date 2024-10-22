@@ -1,4 +1,4 @@
-package dev.forge.unifit.facility;
+package dev.forge.unifit.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
