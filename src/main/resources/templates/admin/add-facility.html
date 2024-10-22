@@ -114,65 +114,65 @@
       />
 
       <!-- Opening and Closing Times -->
+
+      <!-- Opening and Closing Times -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
-          <label
-                  for="weekdayOpeningTime"
-                  class="text-gray-700 text-sm font-bold"
-          >Weekday Opening Time:</label
-          >
+          <label for="weekdayOpeningTime" class="text-gray-700 text-sm font-bold">
+            Weekday Opening Time:
+          </label>
           <input
                   type="time"
                   id="weekdayOpeningTime"
                   name="weekdayOpeningTime"
                   required
+                  step="3600"
                   class="border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
           />
         </div>
+
         <div>
-          <label
-                  for="weekdayClosingTime"
-                  class="text-gray-700 text-sm font-bold"
-          >Weekday Closing Time:</label
-          >
-          <input
-                  type="time"
-                  id="weekdayClosingTime"
-                  name="weekdayClosingTime"
-                  required
-                  class="border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
-          />
-        </div>
-        <div>
-          <label
-                  for="weekendOpeningTime"
-                  class="text-gray-700 text-sm font-bold"
-          >Weekend Opening Time:</label
-          >
+          <label for="weekendOpeningTime" class="text-gray-700 text-sm font-bold">
+            Weekend Opening Time:
+          </label>
           <input
                   type="time"
                   id="weekendOpeningTime"
                   name="weekendOpeningTime"
                   required
+                  step="3600"
                   class="border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
           />
         </div>
         <div>
-          <label
-                  for="weekendClosingTime"
-                  class="text-gray-700 text-sm font-bold"
-          >Weekend Closing Time:</label
-          >
+          <label for="weekdayClosingTime" class="text-gray-700 text-sm font-bold">
+            Weekday Closing Time:
+          </label>
+          <input
+                  type="time"
+                  id="weekdayClosingTime"
+                  name="weekdayClosingTime"
+                  required
+                  step="3600"
+                  class="border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+          />
+        </div>
+        <div>
+          <label for="weekendClosingTime" class="text-gray-700 text-sm font-bold">
+            Weekend Closing Time:
+          </label>
           <input
                   type="time"
                   id="weekendClosingTime"
                   name="weekendClosingTime"
                   required
+                  step="3600"
                   class="border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
           />
         </div>
       </div>
 
+      <!-- Submit Button -->
       <!-- Submit Button -->
       <button
               type="submit"
@@ -183,5 +183,59 @@
     </form>
   </div>
 </div>
+<script>
+  // Get all time input elements
+  const timeInputs = document.querySelectorAll('input[type="time"]');
+
+  // Add event listeners to each time input
+  timeInputs.forEach(input => {
+    // When the input gets focus, add step="3600" attribute
+    input.addEventListener('focus', function() {
+      this.step = "3600";
+    });
+
+    // When the input changes, force the minutes to be 00
+    input.addEventListener('change', function() {
+      const time = this.value;
+      if (time) {
+        const [hours] = time.split(':');
+        this.value = `${hours}:00`;
+      }
+    });
+
+    // When the input loses focus, validate the time
+    input.addEventListener('blur', function() {
+      const time = this.value;
+      if (time) {
+        const [hours, minutes] = time.split(':');
+        if (minutes !== '00') {
+          this.value = `${hours}:00`;
+        }
+      }
+    });
+  });
+
+  // Add form submit validation
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const timeInputs = this.querySelectorAll('input[type="time"]');
+    let isValid = true;
+
+    timeInputs.forEach(input => {
+      const time = input.value;
+      if (time) {
+        const [, minutes] = time.split(':');
+        if (minutes !== '00') {
+          isValid = false;
+          input.value = input.value.split(':')[0] + ':00';
+        }
+      }
+    });
+
+    if (!isValid) {
+      e.preventDefault();
+      alert('Please select only hourly times (e.g., 1:00, 2:00, etc.)');
+    }
+  });
+</script>
 </body>
 </html>

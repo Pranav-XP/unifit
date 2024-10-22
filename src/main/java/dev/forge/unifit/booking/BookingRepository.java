@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking,Long> {
     List<Booking> findAllByUser(User user);
@@ -33,5 +34,13 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
     @Query("SELECT b.start FROM Booking b WHERE b.facility.id = :facilityId AND b.bookedDate = :date")
     List<LocalTime> findBookedStartTimesByFacilityAndDate(@Param("facilityId") Long facilityId, @Param("date") LocalDate date);
 
-    Integer countBookingsByFacility(Facility facility);
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.bookedDate = :bookedDate " +
+            "AND b.start = :start " +
+            "AND b.facility.id = :facilityId")
+    Optional<Booking> findBookingByBookedDateAndStartAndFacility(@Param("bookedDate") LocalDate bookedDate,
+                                                                 @Param("start") LocalTime start,
+                                                                 @Param("facilityId") Long facilityId);
+    //Integer countBookingsByFacility(Facility facility);
+    //Booking findByBookedDateAndStatus(LocalDate bookedDate, BookingStatus status);
 }

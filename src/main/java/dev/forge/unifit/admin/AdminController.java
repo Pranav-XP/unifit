@@ -19,11 +19,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -147,11 +149,18 @@ public class AdminController {
     }
 
     @GetMapping("/booking/{id}")
-    public String updateBookingPage(@PathVariable("id") Long bookingId, Model model) {
-        Booking userBooking = bookingService.getBooking(bookingId);
-        model.addAttribute("booking",userBooking);
+    public String updateBookingPage(@PathVariable("id") Long bookingId, Model model, RedirectAttributes redirectAttributes) {
+        Optional<Booking> booking = bookingService.getBooking(bookingId);
 
-        return "admin/update-booking";
+        if (booking.isPresent()) {
+            model.addAttribute("booking", booking.get());
+            return "admin/update-booking";
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Booking ID not found.");
+            return "redirect:/admin/booking";
+        }
+
+
     }
 
     @GetMapping("/facilities/{id}")

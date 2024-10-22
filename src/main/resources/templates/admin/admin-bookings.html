@@ -5,7 +5,184 @@
 </head>
 <body>
   <div th:replace="~{fragments/admin-dashboard.html}">
-        <div th:fragment="content"> ADMIN BOOKING PAGE</div>
+      <div th:fragment="content">
+          <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+              <span class="block sm:inline" th:text="${errorMessage}"></span>
+              <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+        <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 5.652a1 1 0 010 1.414l-4.243 4.243 4.243 4.243a1 1 0 01-1.414 1.414l-4.243-4.243-4.243 4.243a1 1 0 01-1.414-1.414l4.243-4.243-4.243-4.243a1 1 0 011.414-1.414l4.243 4.243 4.243-4.243a1 1 0 011.414 0z"/></svg>
+    </span>
+          </div>
+          <h1 class="text-3xl lg:text-5xl px-5 py-5 font-bold">All Bookings</h1>
+          <!-- Table -->
+          <div class="overflow-x-auto bg-white rounded-md shadow-md p-5">
+              <div class="mb-4 grid grid-cols-2 gap-3">
+                  <div>
+                      <label for="customerNameSearch" class="block font-semibold mb-1"
+                      >Search by Customer Name:</label
+                      >
+                      <input
+                              type="text"
+                              id="customerNameSearch"
+                              class="w-full p-2 border rounded-md"
+                              oninput="searchTable()"
+                      />
+                  </div>
+
+                  <div>
+                      <label for="bookingIdSearch" class="block font-semibold mb-1"
+                      >Search by Booking ID:</label
+                      >
+                      <div class="flex gap-2 items-center">
+                          <input
+                                  type="number"
+                                  id="bookingIdSearch"
+                                  class="w-full p-2 border rounded-md"
+                          /><i
+                              onclick="searchBookingId()"
+                              class="cursor-pointer bg-blue-500 text-white w-10 h-10 p-1 rounded-sm"
+                              data-lucide="search"
+                      ></i>
+                      </div>
+                  </div>
+              </div>
+              <table class="min-w-full">
+                  <thead>
+                  <tr>
+                      <th class="py-2 px-1 border-b text-left">ID</th>
+                      <th class="py-2 px-1 border-b text-left">Customer</th>
+                      <th class="py-2 px-1 border-b text-left">Facility</th>
+                      <th class="py-2 px-1 border-b text-left">Date</th>
+                      <th class="py-2 px-1 border-b text-left">Start Time</th>
+                      <th class="py-2 px-1 border-b text-left">End Time</th>
+                      <th class="py-2 px-1 border-b text-left">Status</th>
+                      <th class="py-2 px-1 border-b text-left"></th>
+                      <!-- Add more columns as needed -->
+                  </tr>
+                  </thead>
+                  <tbody id="bookingTable">
+                  <!-- Thymeleaf iteration over bookings -->
+                  <tr th:each="booking : ${bookings}">
+                      <td class="py-2 px-2 border-b" th:text="${booking.id}"></td>
+                      <td
+                              class="py-2 px-2 border-b"
+                              th:text="${booking.user.firstName + ' ' + booking.user.lastName}"
+                      ></td>
+                      <td
+                              class="py-2 px-2 border-b"
+                              th:text="${booking.facility.name}"
+                      ></td>
+                      <td
+                              class="py-2 px-2 border-b"
+                              th:text="${booking.bookedDate}"
+                      ></td>
+                      <td class="py-2 px-2 border-b" th:text="${booking.start}"></td>
+                      <td class="py-2 px-2 border-b" th:text="${booking.end}"></td>
+                      <td
+                              class="py-2 px-2"
+                              th:class="${T(dev.forge.unifit.booking.BookingStatus).getStatusColor(booking.status)}"
+                              th:text="${booking.status.getDisplayName()}"
+                      ></td>
+
+                      <td class="py-2 px-2 border-b">
+                          <a
+                                  th:href="@{'/admin/booking/' + ${booking.id}}"
+                                  class="flex gap-1 font-semibold hover:bg-blue-200 bg-blue-100 justify-center p-1 rounded"
+                          ><i data-lucide="clipboard-edit" class="w-5"></i> Update</a
+                          >
+                      </td>
+                  </tr>
+                  </tbody>
+              </table>
+              <div th:if="${totalPages > 1}" class="mt-5 flex justify-between items-center">
+                  <div class="text-sm text-gray-600">
+                      Total rows: <span class="font-semibold">[[${totalItems}]]</span>
+                  </div>
+                  <div class="flex gap-3 items-center">
+                      <a
+                              th:if="${currentPage > 1}"
+                              th:href="@{'/admin/booking/page/' + ${currentPage-1}}"
+                              class="bg-gray-200 text-gray-700 hover:bg-gray-300 p-2 rounded-md"
+                      >
+                          <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                      </a>
+                      <span class="flex gap-2">
+            <span th:each="i: ${#numbers.sequence(1,totalPages)}">
+                <a
+                        th:if="${currentPage != i}"
+                        th:href="@{'/admin/booking/page/' + ${i}}"
+                        class="bg-blue-100 text-blue-600 px-3 py-1 rounded-md hover:bg-blue-200"
+                >[[${i}]]</a>
+                <span
+                        th:unless="${currentPage != i}"
+                        class="bg-blue-500 text-white px-3 py-1 rounded-md"
+                >[[${i}]]</span>
+            </span>
+        </span>
+                      <a
+                              th:if="${currentPage < totalPages}"
+                              th:href="@{'/admin/booking/page/' + ${currentPage+1}}"
+                              class="bg-gray-200 text-gray-700 hover:bg-gray-300 p-2 rounded-md"
+                      >
+                          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                      </a>
+                  </div>
+              </div>
+
+          </div>
+      </div>
   </div>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+      lucide.createIcons();
+      function searchTable() {
+          // Get the search input value
+          const input = document.getElementById("customerNameSearch");
+          const filter = input.value.toUpperCase();
+
+          // Get the table body and rows
+          const table = document.getElementById("bookingTable");
+          const rows = table.getElementsByTagName("tr");
+
+          // Loop through all table rows, and hide those that don't match the search query
+          for (let i = 0; i < rows.length; i++) {
+              const customerName = rows[i].getElementsByTagName("td")[1]; // Adjust index based on your actual table structure
+
+              if (customerName) {
+                  const textValue = customerName.textContent || customerName.innerText;
+
+                  if (textValue.toUpperCase().indexOf(filter) > -1) {
+                      rows[i].style.display = "";
+                  } else {
+                      rows[i].style.display = "none";
+                  }
+              }
+          }
+      }
+      function searchBookingId() {
+          const bookingId = document.getElementById("bookingIdSearch").value;
+
+          if (!bookingId) {
+              alert("Please enter a Booking ID");
+              return;
+          }
+
+          // Optionally, you can make an AJAX call to check if the booking exists before redirecting.
+          fetch(`/admin/booking/${bookingId}`, {
+              method: 'HEAD'
+          }).then(response => {
+              if (response.ok) {
+                  // Booking ID exists, navigate to the booking details page
+                  window.location.href = `/admin/booking/${bookingId}`;
+              } else {
+                  // Booking ID does not exist, show an error message
+                  alert("Booking ID not found.");
+              }
+          });
+      }
+  </script>
+  <script
+          type="text/javascript"
+          src="https://cdn.jsdelivr.net/npm/toastify-js"
+  ></script>
 </body>
 </html>
