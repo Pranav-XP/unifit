@@ -1,24 +1,118 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>UniFit</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body>
-    <div th:replace="fragments/header :: header"></div>
-    <main class="mt-[88px]">
-      <!-- Hero Section -->
-      <section class="bg-blue-900 text-white text-center py-16">
-        <h1 class="text-4xl lg:text-6xl font-bold mb-4">
-          Welcome to UniFit
-        </h1>
-        <p class="text-lg lg:text-xl">
-          Homepage is being revised - TEAM FORGE
-        </p>
-      </section>
+<head>
+  <meta charset="UTF-8" />
+  <title>UniFit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* Custom styles for smoother scroll and icon adjustments */
+    .icon {
+      width: 50px;
+      height: 50px;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+<main class="mt-[88px]">
+  <!-- Hero Section -->
+  <section class="bg-blue-900 text-white text-center py-16">
+    <div class="container mx-auto">
+      <h1 class="text-4xl lg:text-6xl font-bold mb-4">
+        Welcome to UniFit
+      </h1>
+      <p class="text-lg lg:text-xl mb-6">
+        Your one-stop solution for fitness and wellness.
+      </p>
+      <a href="/facilities" class="inline-block bg-white text-blue-900 rounded-lg px-6 py-3 font-semibold shadow-lg hover:bg-blue-100 transition duration-300">
+        Explore Facilities
+      </a>
+    </div>
+  </section>
 
 
-    </main>
-  </body>
+
+  <!-- Check if facilities list is not empty -->
+  <th:block th:if="${not #lists.isEmpty(facilities)}">
+    <div class="container mx-auto py-10 px-6 md:px-28">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Iterate over facilities and generate information sections -->
+        <div
+                th:each="facility : ${facilities}"
+                class="bg-white rounded-lg border overflow-hidden shadow-md flex flex-col"
+        >
+          <!-- Facility Image -->
+          <div class="h-48 w-full overflow-hidden">
+            <img
+                    th:src="${facility.imageUrl}"
+                    alt="Facility Image"
+                    class="w-full h-full object-cover"
+            />
+          </div>
+
+          <!-- Text Section -->
+          <div class="p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center mb-3">
+                <h2 class="text-2xl font-bold" th:text="${facility.name}">Facility Name</h2>
+                <!-- Status with dynamic color -->
+                <div
+                        th:text="${facility.status.getDisplayName()}"
+                        th:class="${T(dev.forge.unifit.facility.FacilityStatus).getStatusColor(facility.status)}"
+                        class="text-sm font-medium px-2 py-1 rounded"
+                ></div>
+              </div>
+              <p class="text-gray-700 mb-5" th:text="${facility.description}"></p>
+            </div>
+
+            <!-- Facility Info -->
+            <div>
+              <h3 class="font-bold text-lg mb-2">Opening Hours:</h3>
+              <p class="mb-1">
+                <span class="font-bold">Weekdays:</span>
+                <span
+                        th:text="${#temporals.format(facility.weekdayOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekdayClosingTime, 'h:mma')}"
+                ></span>
+              </p>
+              <p class="mb-1">
+                <span class="font-bold">Weekends:</span>
+                <span
+                        th:text="${#temporals.format(facility.weekendOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekendClosingTime, 'h:mma')}"
+                ></span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </th:block>
+
+  <!-- Display a message if facilities list is empty -->
+  <th:block th:if="${#lists.isEmpty(facilities)}">
+    <p class="text-gray-500 text-center">No facilities available.</p>
+  </th:block>
+</main>
+
+<footer class="bg-gray-800 text-white text-center py-6 mt-12">
+  <div class="container mx-auto">
+    <p class="mb-4">Follow Us</p>
+    <div class="flex justify-center space-x-4">
+      <a href="#" class="text-gray-400 hover:text-white">
+        <i class="fab fa-facebook-f icon"></i>
+      </a>
+      <a href="#" class="text-gray-400 hover:text-white">
+        <i class="fab fa-twitter icon"></i>
+      </a>
+      <a href="#" class="text-gray-400 hover:text-white">
+        <i class="fab fa-instagram icon"></i>
+      </a>
+      <a href="#" class="text-gray-400 hover:text-white">
+        <i class="fab fa-linkedin-in icon"></i>
+      </a>
+    </div>
+    <p class="mt-4">&copy; 2024 UniFit. All rights reserved.</p>
+  </div>
+</footer>
+</body>
 </html>
