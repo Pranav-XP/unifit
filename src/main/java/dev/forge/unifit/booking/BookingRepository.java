@@ -3,7 +3,9 @@ package dev.forge.unifit.booking;
 import dev.forge.unifit.facility.Facility;
 import dev.forge.unifit.facility.FacilityStatus;
 import dev.forge.unifit.user.User;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -34,6 +36,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
     @Query("SELECT b.start FROM Booking b WHERE b.facility.id = :facilityId AND b.bookedDate = :date")
     List<LocalTime> findBookedStartTimesByFacilityAndDate(@Param("facilityId") Long facilityId, @Param("date") LocalDate date);
 
+    @Lock(LockModeType.PESSIMISTIC_READ)
     @Query("SELECT b FROM Booking b " +
             "WHERE b.bookedDate = :bookedDate " +
             "AND b.start = :start " +

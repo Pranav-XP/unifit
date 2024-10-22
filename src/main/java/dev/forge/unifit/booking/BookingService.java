@@ -11,6 +11,7 @@ import dev.forge.unifit.user.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,12 +44,14 @@ public class BookingService implements IBookingService {
         booking.setUser(user);
         Facility facility = facilityService.getFacility(form.getFacilityId());
 
-
-        Optional<Booking> existingBooking = bookingRepository.findBookingByBookedDateAndStartAndFacility(form.getBookedDate(),form.getStart(),facility.getId());
-        if(existingBooking.isPresent()){
-            throw new IllegalStateException("The selected timeslot is already booked");
+        try{
+            Optional<Booking> existingBooking = bookingRepository.findBookingByBookedDateAndStartAndFacility(form.getBookedDate(),form.getStart(),facility.getId());
+            if(existingBooking.isPresent()){
+                throw new IllegalStateException("The selected timeslot is already booked");
+            }
+        }catch(CannotAcquireLockException e){
+            throw new RuntimeException("Error while creating booking",e);
         }
-
         booking.setFacility(facility);
         booking.setBookedDate(form.getBookedDate());
         booking.setStart(form.getStart());

@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -51,14 +52,19 @@ public class BookingController {
     }
 
     @PostMapping("/add")
-    public String createBooking(@ModelAttribute("booking") BookingFormDTO form){
+    public String createBooking(@ModelAttribute("booking") BookingFormDTO form,  RedirectAttributes redirectAttributes){
         System.out.println(form.getBookedDate());
         System.out.println(form.getUserId());
         System.out.println(form.getFacilityId());
         System.out.println(form.getStart());
         System.out.println(form.getEnd());
 
-        bookingService.createBooking(form);
+        try {
+            bookingService.createBooking(form);
+        }catch(RuntimeException e){
+            redirectAttributes.addFlashAttribute("errorMessage", "Could not create booking. Please try again");
+            return "redirect:/booking/"+form.getFacilityId();
+        }
         return "redirect:/user";
     }
 

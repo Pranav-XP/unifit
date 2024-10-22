@@ -12,6 +12,23 @@
       <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mt-6 mb-8">
         Select a date and available time
       </h2>
+      <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert" id="error-message">
+        <span class="block sm:inline" th:text="${errorMessage}"></span>
+        <span class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer" onclick="removeErrorMessage()">
+        <!-- SVG for the close icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 6l8 8M6 14l8-8" />
+        </svg>
+    </span>
+      </div>
+
+      <script>
+        function removeErrorMessage() {
+          // Hide the error message div
+          document.getElementById('error-message').style.display = 'none';
+        }
+      </script>
+
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <section id="bookingForm" class="lg:p-4">
           <form
