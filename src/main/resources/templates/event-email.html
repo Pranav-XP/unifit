@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Notification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      color: #333;
+    }
+    .container {
+      margin: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .event-details {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Upcoming Event: <strong th:text="${eventName}"></strong></h1>
+  <p>Dear Participant,</p>
+  <p>We are excited to inform you about an upcoming event:</p>
+  <div class="event-details">
+    <p><strong>Event Name:</strong> <span th:text="${eventName}"></span></p>
+    <p><strong>Date:</strong> <span th:text="${eventDate}"></span></p>
+  </div>
+  <p>We hope to see you there!</p>
+  <p>Best regards,<br>Your Event Team</p>
+</div>
+</body>
+</html>
