@@ -13,6 +13,7 @@ import org.thymeleaf.context.Context;
 @RequiredArgsConstructor
 public class EventEmailService {
 
+
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
 

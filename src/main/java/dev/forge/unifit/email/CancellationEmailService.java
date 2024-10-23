@@ -39,5 +39,6 @@ public class CancellationEmailService {
         helper.setText(content, true); // true indicates HTML content
 
         mailSender.send(helper.getMimeMessage());
+
     }
 }
