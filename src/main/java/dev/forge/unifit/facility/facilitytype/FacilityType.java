@@ -2,6 +2,9 @@ package dev.forge.unifit.facility.facilitytype;
 
 import dev.forge.unifit.facility.Facility;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -24,7 +27,13 @@ public class FacilityType {
     private Long id;
 
     @Column(unique = true)
+    @NotNull(message = "Name cannot be null")
+    @Size(max = 50, message = "Name cannot exceed 50 characters")
     private String name;
+
+    @Column(unique = true)
+    @NotNull(message = "Rate cannot be null")
+    @Min(value = 1, message = "Rate must be greater than 0")
     private Integer rate;
 
     @OneToMany(mappedBy = "facilityType", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)

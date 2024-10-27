@@ -44,7 +44,7 @@ public class FacilityService implements IFacilityService {
     }
 
     @Override
-    public Facility saveFacility(Facility updatedFacility) {
+    public Facility saveFacility(Facility updatedFacility, MultipartFile file) throws IOException{
         Facility facility = facilityRepository.findById(updatedFacility.getId()).get();
 
         // Check and update weekday opening time
@@ -70,11 +70,17 @@ public class FacilityService implements IFacilityService {
         System.out.println("WEEKDAY TIMES: "+ updatedFacility.getWeekdayOpeningTime()+" "+ facility.getWeekdayClosingTime());
         facility.setName(updatedFacility.getName());
         facility.setStatus(updatedFacility.getStatus());
-        facility.setImageUrl(updatedFacility.getImageUrl());
         facility.setDescription(updatedFacility.getDescription());
+
+        //ADD IMAGE LOGIC
+        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, file.getOriginalFilename());
+        Files.write(fileNameAndPath, file.getBytes());
+
+        // Prepare image info and add to the list
+        String imagePath = "/uploads/" + file.getOriginalFilename();
+        facility.setImageUrl(imagePath);
 
         return facilityRepository.save(facility);
 
     }
-
 }

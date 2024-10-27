@@ -96,16 +96,7 @@ public class AdminController {
         return "redirect:/admin/facilities";
     }
 
-    @PostMapping("/facilities/update")
-    public String updateFacility(@ModelAttribute("facility") Facility facility){
-
-
-        facilityService.saveFacility(facility);
-
-        return "redirect:/admin/facilities";
-    }
-
-    @GetMapping("/facilities/addtype")
+ @GetMapping("/facilities/addtype")
     public String addTypeForm(Model model){
         FacilityType newFacilityType = new FacilityType();
         model.addAttribute("facilityType",newFacilityType);
@@ -117,6 +108,21 @@ public class AdminController {
         facilityTypeService.addFacilityType(newFacilityType);
         return "redirect:/admin/facilities";
     }
+
+
+    @PostMapping("/facilities/update")
+    public String updateFacility(@ModelAttribute("facility") Facility facility, @RequestParam("image") MultipartFile file){
+
+
+        try {
+            facilityService.saveFacility(facility,file);
+        } catch (IOException e) {
+            throw new RuntimeException("ERROR: Could not save",e);
+        }
+
+        return "redirect:/admin/facilities";
+    }
+
 
     @GetMapping("/facilities/add")
     public String addFacilityForm(Model model){
@@ -140,6 +146,8 @@ public class AdminController {
         }
         return "redirect:/admin/facilities";
     }
+
+
 
     @GetMapping("/users")
     public String adminUsersPage(){
@@ -189,7 +197,6 @@ public class AdminController {
 
         return "admin/update-facility";
     }
-
 
 
     @PostMapping("/booking/update")

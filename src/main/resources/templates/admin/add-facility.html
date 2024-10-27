@@ -35,6 +35,9 @@
               type="text"
               id="name"
               name="name"
+              maxlength="50"
+              placeholder="Enter Facility Type Here"
+              title="Name cannot exceed 50 characters"
               th:field="*{name}"
               required
       />
@@ -97,19 +100,55 @@
               class="border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500 resize-none"
               id="description"
               name="description"
+              maxlength="200"
+              placeholder="Enter Description Here"
+              title="Name cannot exceed 200 characters"
               th:field="*{description}"
               rows="4"
               required
       ></textarea>
+
+      <!-- Upload Image-->
       <div class="flex items-center gap-3">
         <label
-                class="flex items-center justify-center bg-gray-200 text-gray-600 font-semibold py-2 px-4 rounded-lg cursor-pointer hover:bg-gray-300">
-          <i data-lucide="upload-cloud" class="w-5 h-5 mr-2"></i>
-          <span>Select Image</span>
-          <input type="file" name="image" id="image" accept="image/*" class="hidden" required onchange="previewImage(event)">
+            class="flex items-center justify-center bg-gray-200 text-gray-600 font-semibold py-2 px-4 rounded-lg cursor-pointer hover:bg-gray-300">
+            <i data-lucide="upload-cloud" class="w-5 h-5 mr-2"></i>
+            <span>Select Image</span>
+            <input type="file" name="image" id="image" accept="image/*" class="hidden" required onchange="validateImage(event)">
         </label>
         <img id="imagePreview" src="#" alt="Image Preview" class="w-20 h-20 object-cover rounded-lg" style="display: none;" />
+        <p id="error-message" style="color: red; display: none;">Please select a valid image file (jpg, png, gif).</p>
       </div>
+
+      <script>
+      function validateImage(event) {
+          var file = event.target.files[0];
+          var errorMessage = document.getElementById('error-message');
+          var imagePreview = document.getElementById('imagePreview');
+
+          // Check if the file is of a valid image type
+          if (file && (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif")) {
+              // Hide error message if the file is valid
+              errorMessage.style.display = 'none';
+
+              // Show image preview
+              var reader = new FileReader();
+              reader.onload = function(e) {
+                  imagePreview.src = e.target.result;
+                  imagePreview.style.display = 'block';
+              }
+              reader.readAsDataURL(file);
+          } else {
+              // Display error message if the file is not a valid image
+              errorMessage.style.display = 'block';
+              imagePreview.style.display = 'none'; // Hide preview if invalid file is selected
+
+              // Reset file input
+              event.target.value = ''; // Clears the file input so the user can select again
+          }
+      }
+      </script>
+
       <script>
         function previewImage(event) {
           const reader = new FileReader();
