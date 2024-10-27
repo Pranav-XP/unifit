@@ -45,7 +45,8 @@ public class Booking {
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
-    @OneToOne(mappedBy = "booking")
+    @ManyToOne
+    @JoinColumn(name = "transaction_id")
     private Transaction transaction;
 
     @CreatedDate

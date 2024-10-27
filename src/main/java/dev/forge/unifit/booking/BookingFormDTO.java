@@ -13,6 +13,7 @@ public class BookingFormDTO {
     private LocalDate bookedDate;
     private LocalTime start;
     private LocalTime end;
+    private String facilityName;
 
 
 }

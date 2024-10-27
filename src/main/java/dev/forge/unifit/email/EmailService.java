@@ -10,6 +10,11 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class EmailService {
 
@@ -22,24 +27,41 @@ public class EmailService {
         this.templateEngine = templateEngine;
     }
 
-    public void sendBookingInvoice(String recipientEmail, String customerName, Booking booking, double totalPrice) throws MessagingException {
+    public void sendBookingInvoice(List<Booking> bookings) throws MessagingException {
+        if (bookings.isEmpty()) {
+            throw new IllegalArgumentException("No bookings to process");
+        }
+
         // Create email
         MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = null;
+        MimeMessageHelper helper;
+
         try {
             helper = new MimeMessageHelper(message, true);
         } catch (MessagingException e) {
-            throw new RuntimeException("MesseageHelper could not be created", e);
+            throw new RuntimeException("MessageHelper could not be created", e);
         }
+
+        // Get the recipient email and customer name from the first booking
+        String recipientEmail = bookings.get(0).getUser().getEmail(); // Assuming User object has getEmail method
+        String customerName = bookings.get(0).getUser().getFirstName(); // Assuming User object has getFirstName method
 
         helper.setTo(recipientEmail);
         helper.setSubject("Your UniFit Booking Invoice");
 
-        // Hardcoded mock data
+        // Prepare the context for the Thymeleaf template
         Context context = new Context();
         context.setVariable("customerName", customerName);
-        context.setVariable("booking", booking);
-        context.setVariable("totalPrice", "TEST PRICE HOLDER");
+
+        double totalPrice = 0.0;
+
+        for (Booking booking : bookings) {
+            totalPrice += booking.getFacility().getFacilityType().getRate(); // Accumulate the total price
+        }
+
+        // Set the booking details and total price in the context
+        context.setVariable("bookings", bookings);
+        context.setVariable("totalPrice", totalPrice);
 
         // Load and populate the Thymeleaf template
         String htmlContent = templateEngine.process("invoice-email", context);
@@ -48,4 +70,5 @@ public class EmailService {
         // Send the email
         mailSender.send(message);
     }
+
 }

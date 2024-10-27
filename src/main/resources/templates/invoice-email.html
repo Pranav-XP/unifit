@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>UniFit Booking Invoice</title>
+    <title>Your UniFit Booking Invoice</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -58,14 +58,15 @@
 </head>
 <body>
 <div class="container">
-    <h1>Booking Invoice</h1>
-    <p>Dear <strong th:text="${booking.user.firstName}">UserName</strong>,</p>
-    <p>Thank you for using UniFit. Below are the details of your booking:</p>
+    <h1>Your UniFit Booking Invoice</h1>
+    <p>Dear <strong th:text="${customerName}">UserName</strong>,</p>
+    <p>Thank you for using UniFit. Below are the details of your bookings:</p>
 
     <!-- Booking Details Table -->
     <table>
         <thead>
         <tr>
+            <th>Booking ID</th>
             <th>Facility</th>
             <th>Date</th>
             <th>Start Time</th>
@@ -74,19 +75,20 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
+        <tr th:each="booking : ${bookings}">
+            <td th:text="${booking.id}">Booking ID</td>
             <td th:text="${booking.facility.name}">Facility Name</td>
-            <td th:text="${booking.bookedDate}">Booking Date</td>
+            <td th:text="${#temporals.format(booking.bookedDate, 'dd/MM/yyyy')}">Booking Date</td>
             <td th:text="${booking.start}">Start Time</td>
             <td th:text="${booking.end}">End Time</td>
-            <td th:text="${booking.facility.facilityType.rate}">$Price</td>
+            <td th:text="${'$' + booking.facility.facilityType.rate}">Price</td>
         </tr>
         </tbody>
     </table>
 
     <!-- Total Price -->
     <div class="total">
-        Total: <span th:text="'$' + ${booking.facility.facilityType.rate}">Total Price</span>
+        Total: <span th:text="'$' + ${totalPrice}">Total Price</span>
     </div>
 
     <!-- Footer -->
