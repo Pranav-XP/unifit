@@ -28,6 +28,13 @@
             margin-bottom: 10px;
             color: #666;
         }
+        .booking-details {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -54,6 +61,13 @@
             color: #aaa;
             font-size: 14px;
         }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -62,39 +76,43 @@
     <p>Dear <strong th:text="${customerName}">UserName</strong>,</p>
     <p>Thank you for using UniFit. Below are the details of your bookings:</p>
 
-    <!-- Booking Details Table -->
-    <table>
-        <thead>
-        <tr>
-            <th>Booking ID</th>
-            <th>Facility</th>
-            <th>Date</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Price</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="booking : ${bookings}">
-            <td th:text="${booking.id}">Booking ID</td>
-            <td th:text="${booking.facility.name}">Facility Name</td>
-            <td th:text="${#temporals.format(booking.bookedDate, 'dd/MM/yyyy')}">Booking Date</td>
-            <td th:text="${booking.start}">Start Time</td>
-            <td th:text="${booking.end}">End Time</td>
-            <td th:text="${'$' + booking.facility.facilityType.rate}">Price</td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="booking-details">
+        <!-- Booking Details Table -->
+        <table>
+            <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Facility</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="booking : ${bookings}">
+                <td th:text="${booking.id}">Booking ID</td>
+                <td th:text="${booking.facility.name}">Facility Name</td>
+                <td th:text="${#temporals.format(booking.bookedDate, 'dd/MM/yyyy')}">Booking Date</td>
+                <td th:text="${booking.start}">Start Time</td>
+                <td th:text="${booking.end}">End Time</td>
+                <td th:text="${'$' + booking.facility.facilityType.rate}">Price</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
     <!-- Total Price -->
     <div class="total">
         Total: <span th:text="'$' + ${totalPrice}">Total Price</span>
     </div>
 
-    <!-- Footer -->
+    <p>We hope you enjoy your experience at UniFit!</p>
+    <p>Best regards,<br>The UniFit Team</p>
+
     <div class="footer">
-        Best regards, <br>
-        UniFit Team
+        &copy; 2024 UniFit. All rights reserved.<br>
+        If you wish to unsubscribe from these notifications, please <a href="#">click here</a>.
     </div>
 </div>
 </body>

@@ -1,7 +1,9 @@
 package dev.forge.unifit.event;
 
+import dev.forge.unifit.email.EmailService;
 import dev.forge.unifit.facility.Facility;
 import dev.forge.unifit.facility.FacilityService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +21,7 @@ public class EventController {
 
     private final EventService eventService;
     private final FacilityService facilityService;
+    private final EmailService emailService;
 
     @GetMapping("")
     public String displayAllEvents(Model model) {
@@ -48,7 +51,12 @@ public class EventController {
             throw new IllegalArgumentException("Event DateTime is required");
         }
 
-        eventService.saveEvent(event);
+        Event newEvent = eventService.saveEvent(event);
+        try {
+            emailService.sendEventNotification(newEvent);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Email not sent",e);
+        }
         return "redirect:/events"; // redirect to the events page after saving
     }
 

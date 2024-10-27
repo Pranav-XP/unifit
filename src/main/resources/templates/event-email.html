@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+        }
+        .content h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .content p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .event-details {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #dddddd;
+            border-radius: 4px;
+        }
+        .footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            color: #666666;
+        }
+        a {
+            color: #4caf8c;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Upcoming Event Notification</h2>
+        </div>
+        <div class="content">
+            <h1 th:text="${event.title}">Event Title</h1>
+            <p th:text="${event.description}">This is a brief description of the event. It should provide important
+                information that the attendees need to know.</p>
+
+            <div class="event-details">
+                <p><strong>Event Name:</strong> <span th:text="${event.eventName}">Event Name</span></p>
+                <p><strong>Date:</strong>
+                    <span th:text="${#temporals.format(event.eventDateTime, 'dd/MM/yyyy')}">Event Date</span>
+                </p>
+                <p><strong>Time:</strong>
+                    <span th:text="${#temporals.format(event.eventDateTime, 'HH:mm')}">Event Time</span>
+                </p>
+                <p><strong>Location:</strong> <span th:text="${facility}">Facility Name</span></p>
+
+            </div>
+            <p>We look forward to seeing you there!</p>
+            <p>Best Regards,<br>Your UniFit Team</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 UniFit. All rights reserved.</p>
+            <p>If you wish to unsubscribe from these emails, please <a href="#">click here</a>.</p>
+        </div>
+    </div>
+</body>
+</html>

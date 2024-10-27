@@ -1,5 +1,7 @@
 package dev.forge.unifit.event;
 
+import dev.forge.unifit.email.EmailService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,9 +23,9 @@ public class EventService {
         return eventRepository.findAll();
     }
 
-    public void saveEvent(Event event) {
-
-        eventRepository.save(event);
+    public Event saveEvent(Event event) {
+        System.out.println("FACILITY NAME IS "+event.getFacility().getId());
+        return eventRepository.save(event);
     }
 
     public Event getEventById(Long id) {

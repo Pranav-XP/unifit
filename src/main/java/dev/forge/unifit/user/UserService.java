@@ -70,6 +70,7 @@ public class UserService implements IUserService {
         return userRepository.save(target);
     }
 
-
-
+    public List<String> getAllUserEmailsExceptAdmin(String adminEmail) {
+        return userRepository.findAllEmailsExceptAdmin(adminEmail);
+    }
 }
