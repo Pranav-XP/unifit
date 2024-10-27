@@ -17,14 +17,11 @@ public class EventService {
 
     private final EventRepository eventRepository;
 
-    // Directory where images will be stored
-    private final String uploadDir = "C:/uploads/";
-
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
     }
 
-  public void saveEvent(Event event) {
+    public void saveEvent(Event event) {
 
         eventRepository.save(event);
     }
@@ -37,27 +34,9 @@ public class EventService {
         eventRepository.deleteById(id);
     }
 
-/*    // Method to handle image storage
-    public String saveImage(MultipartFile file) {
-        try {
-            // Create a unique name for the image file
-            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            Path filePath = Paths.get(uploadDir, fileName);
 
-            // Ensure the upload directory exists
-            Files.createDirectories(filePath.getParent());
 
-            // Save the image to the file system
-            Files.write(filePath, file.getBytes());
-
-            return fileName;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }*/
-
-    public void updateEvent(Long eventId, Event updatedEvent/*, MultipartFile file*/) {
+    public void updateEvent(Long eventId, Event updatedEvent) {
         Event existingEvent = eventRepository.findById(eventId).orElse(null);
 
         if (existingEvent != null) {
@@ -67,11 +46,6 @@ public class EventService {
             existingEvent.setEventDateTime(updatedEvent.getEventDateTime()); // Ensure this is set
             existingEvent.setFacility(updatedEvent.getFacility());
 
-/*            // If a new image is provided, save it and update the image field
-            if (file != null && !file.isEmpty()) {
-                String imageName = saveImage(file);
-                existingEvent.setImageUrl(imageName);
-            }*/
 
             eventRepository.save(existingEvent);
         }

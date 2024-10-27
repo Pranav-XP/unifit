@@ -23,6 +23,9 @@
                 <input class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
                        type="text"
                        id="eventName"
+                       maxlength="50"
+                       placeholder="Enter Name Here"
+                       title="Name cannot exceed 50 characters"
                        th:field="*{eventName}"
                        required />
             </div>
@@ -33,6 +36,9 @@
                 <input class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
                        type="text"
                        id="title"
+                       maxlength="50"
+                        placeholder="Enter title Here"
+                        title="Name cannot exceed 50 characters"
                        th:field="*{title}"
                        required />
             </div>
@@ -58,22 +64,14 @@
                 <textarea class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500 resize-none"
                           id="description"
                           name="description"
+                          maxlength="200"
+                          placeholder="Enter Description Here"
+                          title="Name cannot exceed 200 characters"
                           th:field="*{description}"
                           rows="4"
                           required></textarea>
             </div>
 
-            <!--
-                        &lt;!&ndash; Image Input &ndash;&gt;
-                        <div>
-                            <label for="image" class="block text-gray-700 text-sm font-bold mb-2">Image:</label>
-                            <input class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
-                                   type="file"
-                                   id="image"
-                                   name="image"
-                                   required />
-                        </div>
-            -->
 
             <!-- Event Date and Time -->
             <div>
