@@ -6,114 +6,116 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
-    /* Custom styles for smoother scroll and icon adjustments */
-    .icon {
-      width: 50px;
-      height: 50px;
+    /* Custom styles for the slider */
+    .slider {
+      position: relative;
+      width: 100%; /* Full width of the screen */
+      height: 500px; /* Fixed height for the slider */
+      overflow: hidden;
+      margin: auto; /* Center align the slider */
+    }
+
+    .slider-inner {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .slider-inner img {
+      width: 100vw; /* Make images fill the viewport width */
+      height: 100%; /* Make images fill the slider height */
+      object-fit: cover; /* Cover the entire area while maintaining aspect ratio */
+      flex-shrink: 0; /* Prevent shrinking */
+    }
+
+    .prev, .next {
+      position: absolute; /* Ensure they are positioned relative to the slider */
+      top: 50%; /* Center vertically */
+      transform: translateY(-50%); /* Adjust for exact center */
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 50%;
+      z-index: 10; /* Ensure they are on top of images */
+    }
+
+    .prev {
+      left: 20px; /* Position left */
+    }
+
+    .next {
+      right: 20px; /* Position right */
+    }
+
+    /* Dot indicators */
+    .dots {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .dot {
+      height: 10px;
+      width: 10px;
+      margin: 0 5px;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .dot.active {
+      background-color: #717171;
     }
   </style>
 </head>
 <body>
 <div th:replace="fragments/header :: header"></div>
 
-<section class="bg-blue-900 text-white text-center py-16 mt-5">
-  <div class="container mx-auto" style="margin-top: 5%">
-    <h1 class="text-4xl lg:text-6xl font-bold mb-4">Welcome to UniFit</h1>
-    <p class="text-lg lg:text-xl mb-6">Your one-stop solution for fitness and wellness.</p>
-    <a href="/facilities" class="inline-block bg-white text-blue-900 rounded-lg px-6 py-3 font-semibold shadow-lg hover:bg-blue-100 transition duration-300">Explore Facilities</a>
+<section class="bg-blue-900 text-white text-center py-16 mt-5" style="margin-top: 5%">
+  <div class="container mx-auto px-4">
+    <h1 class="text-3xl sm:text-4xl lg:text-6xl font-bold mb-4">Welcome to UniFit</h1>
+    <p class="text-base sm:text-lg lg:text-xl mb-6">Your one-stop solution for fitness and wellness.</p>
+    <a href="/facilities" class="inline-block bg-white text-blue-900 rounded-lg px-4 py-2 sm:px-6 sm:py-3 font-semibold shadow-lg hover:bg-blue-100 transition duration-300">Explore Facilities</a>
   </div>
 </section>
 
-<main class="flex flex-col md:flex-row mt-4"><!--class="mt-[88px]"-->
-<!--  &lt;!&ndash; Hero Section &ndash;&gt;
-  <section class="bg-blue-900 text-white text-center py-16">
-    <div class="container mx-auto">
-      <h1 class="text-4xl lg:text-6xl font-bold mb-4">
-        Welcome to UniFit
-      </h1>
-      <p class="text-lg lg:text-xl mb-6">
-        Your one-stop solution for fitness and wellness.
-      </p>
-      <a href="/facilities" class="inline-block bg-white text-blue-900 rounded-lg px-6 py-3 font-semibold shadow-lg hover:bg-blue-100 transition duration-300">
-        Explore Facilities
-      </a>
-    </div>
-  </section>-->
-
-  <section class="bg-gray-100 flex-grow p-6 md:w-3/4">
-  <h2 class="text-3xl font-bold mb-6">Facilities</h2>
-  <!-- Check if facilities list is not empty -->
-  <th:block th:if="${not #lists.isEmpty(facilities)}">
-    <div class="container mx-auto py-10 px-6 md:px-28">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Iterate over facilities and generate information sections -->
-        <div
-                th:each="facility : ${facilities}"
-                class="bg-white rounded-lg border overflow-hidden shadow-md flex flex-col"
-        >
-          <!-- Facility Image -->
-          <div class="h-48 w-full overflow-hidden">
-            <img
-                    th:src="${facility.imageUrl}"
-                    alt="Facility Image"
-                    class="w-full h-full object-cover"
-            />
-          </div>
-
-          <!-- Text Section -->
-          <div class="p-6 flex flex-col justify-between">
-            <div>
-              <div class="flex justify-between items-center mb-3">
-                <h2 class="text-2xl font-bold" th:text="${facility.name}">Facility Name</h2>
-                <!-- Status with dynamic color -->
-                <div
-                        th:text="${facility.status.getDisplayName()}"
-                        th:class="${facility.status.getStatusColor()}"
-                        class="text-sm font-medium px-2 py-1 rounded"
-                ></div>
-              </div>
-              <p class="text-gray-700 mb-5" th:text="${facility.description}"></p>
-            </div>
-
-            <!-- Facility Info -->
-            <div>
-              <h3 class="font-bold text-lg mb-2">Opening Hours:</h3>
-              <p class="mb-1">
-                <span class="font-bold">Weekdays:</span>
-                <span
-                        th:text="${#temporals.format(facility.weekdayOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekdayClosingTime, 'h:mma')}"
-                ></span>
-              </p>
-              <p class="mb-1">
-                <span class="font-bold">Weekends:</span>
-                <span
-                        th:text="${#temporals.format(facility.weekendOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekendClosingTime, 'h:mma')}"
-                ></span>
-              </p>
-            </div>
-          </div>
+<!-- Image Slider Section -->
+<section class="bg-gray-100 py-10" style="margin-top: -5%">
+  <div class="flex justify-center"> <!-- Center the slider container -->
+    <div class="slider">
+      <div class="slider-inner" id="slider-inner">
+        <!-- Facility Images Loop -->
+        <div th:each="facility, iterStat : ${facilities}">
+          <img th:src="${facility.imageUrl}" alt="Facility Image" th:alt="${facility.name}" class="slider-image" />
         </div>
       </div>
+      <!-- Navigation Arrows -->
+      <button class="prev" onclick="moveSlide(-1)" aria-label="Previous Slide">&#10094;</button>
+      <button class="next" onclick="moveSlide(1)" aria-label="Next Slide">&#10095;</button>
     </div>
-  </th:block>
+  </div>
 
-  <!-- Display a message if facilities list is empty -->
-  <th:block th:if="${#lists.isEmpty(facilities)}">
-    <p class="text-gray-500 text-center">No facilities available.</p>
-  </th:block>
-  </section>
+  <!-- Dots for Slider -->
+  <div class="dots" id="dots">
+    <div th:each="facility, iterStat : ${facilities}">
+      <span class="dot" onclick="currentSlide([[${iterStat.index}]]);"></span>
+    </div>
+  </div>
+</section>
 
-  <aside class="w-full md:w-1/4 bg-blue-100 p-6 border-l md:border-l-0 md:border-t md:rounded-t-none rounded-t-lg md:rounded-lg mt-6 md:mt-0 shadow-lg">
-    <h2 class="text-3xl font-bold text-blue-800 mb-6">Upcoming Events</h2>
+<!-- Upcoming Events Section -->
+<main class="flex justify-center mt-4">
+  <aside class="w-full md:w-3/4 bg-blue-100 p-4 md:p-6 mt-6 md:mt-0 shadow-lg">
+    <h2 class="text-2xl font-bold text-blue-800 mb-6">Upcoming Events</h2>
 
     <th:block th:if="${not #lists.isEmpty(events)}">
-      <div class="grid grid-cols-1 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4"> <!-- Use grid layout -->
         <div th:each="event : ${events}"
              th:if="${event.eventDateTime.isAfter(T(java.time.LocalDateTime).now())}"
              class="bg-white rounded-lg border border-blue-200 overflow-hidden shadow-md flex flex-col p-4">
           <div class="flex flex-col justify-between">
             <h3 class="text-lg font-bold text-blue-800" th:text="${event.title}">Event Title</h3>
-            <!-- Display Date and Time -->
             <p class="text-blue-600" th:text="${#temporals.format(event.eventDateTime, 'dd MMM yyyy, hh:mm a')}">
               <!-- Sample formatted output: 27 Oct 2024, 03:00 PM -->
             </p>
@@ -127,7 +129,6 @@
         </div>
       </div>
     </th:block>
-
 
     <th:block th:if="${#lists.isEmpty(events)}">
       <p class="text-gray-500 text-center">No upcoming events available.</p>
@@ -155,5 +156,49 @@
     <p class="mt-4">&copy; 2024 UniFit. All rights reserved.</p>
   </div>
 </footer>
+
+<script>
+  let currentIndex = 0;
+  const slides = document.querySelectorAll(".slider-inner img");
+  const dots = document.querySelectorAll(".dot");
+  const slideInterval = 3000; // Change slide every 3 seconds
+  let autoSlide;
+
+  function showSlide(index) {
+    if (index >= slides.length) currentIndex = 0;
+    else if (index < 0) currentIndex = slides.length - 1;
+    else currentIndex = index;
+
+    slides.forEach((slide, i) => {
+      slide.style.display = i === currentIndex ? "block" : "none";
+      dots[i].classList.remove("active");
+    });
+
+    slides[currentIndex].style.display = "block";
+    dots[currentIndex].classList.add("active");
+  }
+
+  function moveSlide(n) {
+    clearInterval(autoSlide); // Stop auto sliding when user navigates
+    showSlide(currentIndex + n);
+    startAutoSlide(); // Restart auto sliding
+  }
+
+  function currentSlide(n) {
+    clearInterval(autoSlide); // Stop auto sliding when user clicks a dot
+    showSlide(n);
+    startAutoSlide(); // Restart auto sliding
+  }
+
+  function startAutoSlide() {
+    autoSlide = setInterval(() => {
+      showSlide(currentIndex + 1);
+    }, slideInterval);
+  }
+
+  // Initialize the slider and start auto sliding
+  showSlide(currentIndex);
+  startAutoSlide();
+</script>
 </body>
 </html>
