@@ -34,17 +34,29 @@
           <label for="rate" class="block text-gray-700 text-sm font-bold mb-2"
           >Rate:</label
           >
-          <input
-                  type="number"
-                  id="rate"
-                  name="rate"
-                  min="1"
-                  placeholder="Enter a rate"
-                  title="Rate must be a number greater than 0"
-                  th:field="*{rate}"
-                  required
-                  class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
-          />
+            <input
+            type="number"
+            id="rate"
+            name="rate"
+            min="1"
+            step="1"
+            placeholder="Enter a rate"
+            title="Rate must be a whole number greater than 0"
+            th:field="*{rate}"
+            required
+            class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+            oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+            onblur="validateInteger(this)"
+            />
+
+        <script>
+          function validateInteger(input) {
+            if (input.value.includes('.')) {
+              alert("Please enter a valid integer without a decimal point.");
+              input.value = Math.floor(input.value);  // Truncate the decimal if any
+            }
+          }
+        </script>
         </div>
 
         <button
