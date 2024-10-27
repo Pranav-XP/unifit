@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
@@ -30,21 +32,27 @@ public class EventController {
         List<Facility> facilities = facilityService.getAllFacilities();
         model.addAttribute("facilities", facilities);
         model.addAttribute("event", new Event());
+
+        // Add minimum date and time for the event
+        LocalDateTime now = LocalDateTime.now();
+        String formattedDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+        model.addAttribute("minDateTime", formattedDate);
+
         return "admin/admin-createEvent"; // updated to reflect the correct path
     }
 
     @PostMapping("/create")
-    public String createEvent(@ModelAttribute Event event, @RequestParam("image") MultipartFile imageFile) {
+    public String createEvent(@ModelAttribute Event event/*, @RequestParam("image") MultipartFile imageFile*/) {
         // Ensure the eventDateTime is parsed correctly
         if (event.getEventDateTime() == null) {
             throw new IllegalArgumentException("Event DateTime is required");
         }
 
-        // Save image and set imageUrl in the event
+/*        // Save image and set imageUrl in the event
         String imageName = eventService.saveImage(imageFile);
         event.setImageUrl(imageName);
-
-        eventService.saveEvent(event, imageFile); // Save event with image URL
+// Save event with image URL*/
+        eventService.saveEvent(event);
         return "redirect:/events"; // redirect to the events page after saving
     }
 
@@ -54,13 +62,18 @@ public class EventController {
         List<Facility> facilities = facilityService.getAllFacilities();
         model.addAttribute("facilities", facilities);
         model.addAttribute("event", event);
+
+        LocalDateTime now = LocalDateTime.now();
+        String formattedDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+        model.addAttribute("minDateTime", formattedDate);
+
         return "admin/admin-editEvent"; // updated to reflect the correct path
     }
 
     @PostMapping("/edit/{id}")
-    public String editEvent(@PathVariable Long id, @ModelAttribute Event event, @RequestParam(value = "image", required = false) MultipartFile imageFile) {
+    public String editEvent(@PathVariable Long id, @ModelAttribute Event event/*, @RequestParam(value = "image", required = false*/)/* MultipartFile imageFile)*/ {
         event.setId(id); // ensure the ID is set for updating
-        eventService.updateEvent(id, event, imageFile); // updated to use the update method in the service
+        eventService.updateEvent(id, event/*, imageFile*/); // updated to use the update method in the service
         return "redirect:/events"; // redirect to the events page after updating
     }
 
