@@ -1,6 +1,12 @@
 package dev.forge.unifit.facility;
 
 
+import dev.forge.unifit.booking.Booking;
+import dev.forge.unifit.booking.BookingRepository;
+import dev.forge.unifit.booking.BookingStatus;
+import dev.forge.unifit.facility.facilitytype.FacilityType;
+import dev.forge.unifit.facility.facilitytype.FacilityTypeRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,13 +15,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FacilityService implements IFacilityService {
     private final FacilityRepository facilityRepository;
+    private final BookingRepository bookingRepository;
+    private final FacilityTypeRepository facilityTypeRepository;
     @Override
     public List<Facility> getAllFacilities() {
         return facilityRepository.findAll();
@@ -81,6 +92,65 @@ public class FacilityService implements IFacilityService {
         facility.setImageUrl(imagePath);
 
         return facilityRepository.save(facility);
+    }
 
+    public List<FacilityRevenue> getMonthlyRevenue(LocalDate year) {
+        List<FacilityRevenue> monthlyRevenue = new ArrayList<>();
+
+        // Iterate through each month of the specified year
+        for (Month month : Month.values()) {
+            LocalDate startDate = LocalDate.of(year.getYear(), month, 1);
+            LocalDate endDate = startDate.withMonth(month.getValue()).plusMonths(1).minusDays(1);
+
+            // Fetch bookings for the month
+            List<Booking> bookings = bookingRepository.findByBookedDateBetween(startDate, endDate);
+
+            // Calculate total revenue for this month
+            double totalRevenue = bookings.stream()
+                    .mapToDouble(booking -> {
+                        // Calculate hours booked
+                        long hours = booking.getEnd().getHour() - booking.getStart().getHour();
+                        // Get facility type rate
+                        double facilityTypeRate = booking.getFacility().getFacilityType().getRate();
+                        return hours * facilityTypeRate;
+                    })
+                    .sum();
+
+            // Create a FacilityRevenue object for this month
+            monthlyRevenue.add(new FacilityRevenue(month, totalRevenue));
+        }
+
+        return monthlyRevenue;
+    }
+
+
+    public Map<String, Double> getRevenueByFacilityType(int year) {
+        List<FacilityType> facilityTypes = facilityTypeRepository.findAll();
+        Map<String, Double> revenueMap = new HashMap<>();
+
+        // Initialize revenue map with zero
+        for (FacilityType facilityType : facilityTypes) {
+            revenueMap.put(facilityType.getName(), 0.0);
+        }
+
+        // Fetch bookings for the specified year
+        List<Booking> bookings = bookingRepository.findBookingsByYear(year);
+
+        // Calculate revenue based on facility type
+        for (Booking booking : bookings) {
+            if (booking.getStatus() != BookingStatus.DELETED) {
+                // Assuming facilityTypeRate is a property of FacilityType
+                Double facilityTypeRate = Double.valueOf(booking.getFacility().getFacilityType().getRate()); // Replace with actual property
+
+                // Calculate the hours booked
+                double hoursBooked = booking.getEnd().getHour() - booking.getStart().getHour();
+                double revenue = hoursBooked * facilityTypeRate;
+
+                // Accumulate the revenue for the facility type
+                String facilityTypeName = booking.getFacility().getFacilityType().getName();
+                revenueMap.put(facilityTypeName, revenueMap.get(facilityTypeName) + revenue);
+            }
+        }
+        return revenueMap;
     }
 }
