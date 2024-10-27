@@ -1,12 +1,8 @@
 <!-- header.html -->
 <header class="fixed z-10 top-0 w-full" xmlns:sec="http://www.thymeleaf.org">
-  <nav
-    class="flex items-center justify-between w-full p-5 bg-blue-600 border-b-2 border-blue-900"
-  >
+  <nav class="flex items-center justify-between w-full p-5 bg-blue-600 border-b-2 border-blue-900">
     <a th:href="@{/}">
-      <h1
-        class="text-4xl lg:text-5xl font-extrabold text-white flex items-center gap-4"
-      >
+      <h1 class="text-4xl lg:text-5xl font-extrabold text-white flex items-center gap-4">
         UniFit<i class="w-16 h-16" data-lucide="graduation-cap"></i>
         <script src="https://unpkg.com/lucide@latest"></script>
         <script>
@@ -17,148 +13,117 @@
 
     <!-- Desktop Menu -->
     <ul class="hidden lg:flex gap-7 text-lg" sec:authorize="isAuthenticated()">
-      <!--<li
-        class="text-white hover:underline active:underline font-semibold cursor-pointer"
-      >
-        <a th:href="@{/user}">My Bookings</a>
-      </li>-->
-      <li
-        class="text-white hover:underline active:underline font-semibold cursor-pointer"
-      >
+      <li class="text-white hover:underline active:underline font-semibold cursor-pointer">
         <a th:href="@{/facilities}">Facilities</a>
       </li>
-      <li
-        class="text-white hover:underline active:underline font-semibold cursor-pointer"
-      >
+      <li class="text-white hover:underline active:underline font-semibold cursor-pointer">
         <a th:href="@{/booking}">Book</a>
       </li>
-      <li
-        sec:authorize="hasRole('ROLE_ADMIN')"
-        class="text-white hover:underline active:underline font-semibold cursor-pointer"
-      >
+      <li class="text-white hover:underline active:underline font-semibold cursor-pointer">
+        <a th:href="@{/user}">Profile</a>
+      </li>
+      <li sec:authorize="hasRole('ROLE_ADMIN')" class="text-white hover:underline active:underline font-semibold cursor-pointer">
         <a th:href="@{/admin}">Dashboard</a>
       </li>
-      <li
-        class="text-white hover:underline active:underline font-semibold cursor-pointer"
-      >
+      <li class="text-white hover:underline active:underline font-semibold cursor-pointer">
         <a th:href="@{/logout}">Logout</a>
       </li>
     </ul>
 
     <ul class="hidden lg:flex gap-7 text-lg" sec:authorize="!isAuthenticated()">
-      <li
-        class="text-white hover:underline active:underline font-semibold cursor-pointer"
-      >
+      <li class="text-white hover:underline active:underline font-semibold cursor-pointer">
         <a th:href="@{/facilities}">Facilities</a>
       </li>
-      <li
-        class="text-white hover:underline active:underline font-semibold cursor-pointer"
-      >
+      <li class="text-white hover:underline active:underline font-semibold cursor-pointer">
         <a th:href="@{/registration}">Register</a>
       </li>
-      <li
-        class="text-white hover:underline active:underline font-semibold cursor-pointer"
-      >
+      <li class="text-white hover:underline active:underline font-semibold cursor-pointer">
         <a th:href="@{/login}">Login</a>
       </li>
     </ul>
 
     <!-- Mobile Menu (visible on small screens) -->
     <div class="lg:hidden flex items-center">
-      <button
-        class="text-white hover:text-gray-300 focus:outline-none"
-        id="mobile-menu-button"
-      >
-        <!-- Add your mobile menu icon (e.g., hamburger icon) here -->
+      <button class="text-white hover:text-gray-300 focus:outline-none" id="mobile-menu-button">
+        <!-- Mobile menu icon -->
         ☰
       </button>
     </div>
   </nav>
 
   <!-- Mobile Sidebar (hidden by default) -->
-  <div
-    id="mobile-sidebar"
-    class="lg:hidden fixed inset-0 bg-blue-600 bg-opacity-75 z-50 hidden"
-  >
+  <div id="mobile-sidebar" class="lg:hidden fixed inset-y-0 left-0 bg-gray-100 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out hidden w-64">
     <div class="flex justify-end p-5">
-      <button
-        class="text-white hover:text-gray-300 focus:outline-none"
-        id="close-mobile-sidebar"
-      >
-        <!-- Add your close icon (e.g., X) here -->
+      <button class="text-blue-700 hover:text-blue-500 focus:outline-none" id="close-mobile-sidebar">
+        <!-- Close icon -->
         ✕
       </button>
     </div>
-    <ul class="text-white text-lg p-5 flex flex-col gap-3">
+    <ul class="text-blue-700 text-lg p-5 flex flex-col gap-3">
       <li class="hover:underline active:underline cursor-pointer">
         <a th:href="@{/facilities}">Facilities</a>
       </li>
-      <li
-        sec:authorize="isAuthenticated()"
-        class="hover:underline active:underline cursor-pointer"
-      >
+      <li sec:authorize="isAuthenticated()" class="hover:underline active:underline cursor-pointer">
         <a th:href="@{/booking}">Bookings</a>
       </li>
-      <li
-        sec:authorize="hasRole('ROLE_ADMIN')"
-        class="hover:underline active:underline cursor-pointer"
-      >
+      <li sec:authorize="isAuthenticated()" class="hover:underline active:underline cursor-pointer">
+        <a th:href="@{/user}">Profile</a>
+      </li>
+      <li sec:authorize="hasRole('ROLE_ADMIN')" class="hover:underline active:underline cursor-pointer">
         <a th:href="@{/admin}">Dashboard</a>
       </li>
 
-      <li
-        sec:authorize="hasRole('ROLE_ADMIN')"
-        class="hover:underline active:underline cursor-pointer"
-      >
-        <a th:href="@{/admin/facilities}">Manage Facilities</a>
-      </li>
-
-      <li
-        sec:authorize="hasRole('ROLE_ADMIN')"
-        class="hover:underline active:underline cursor-pointer"
-      >
-        <a th:href="@{/admin/schedule}">Manage Schedule</a>
-      </li>
-
-      <li
-        sec:authorize="hasRole('ROLE_ADMIN')"
-        class="hover:underline active:underline cursor-pointer"
-      >
+      <li sec:authorize="hasRole('ROLE_ADMIN')" class="hover:underline active:underline cursor-pointer">
         <a th:href="@{/admin/users}">Manage Bookings</a>
       </li>
 
-      <li
-        sec:authorize="isAuthenticated()"
-        class="hover:underline active:underline cursor-pointer"
-      >
-        <a th:href="@{/logout}">Logout </a>
+      <li sec:authorize="hasRole('ROLE_ADMIN')" class="hover:underline active:underline cursor-pointer">
+        <a th:href="@{/admin/schedule}">Maintenance</a>
       </li>
-      <li
-        sec:authorize="!isAuthenticated()"
-        class="hover:underline active:underline cursor-pointer"
-      >
+
+      <li sec:authorize="hasRole('ROLE_ADMIN')" class="hover:underline active:underline cursor-pointer">
+        <a th:href="@{/admin/facilities}">Manage Facilities</a>
+      </li>
+
+      <li sec:authorize="hasRole('ROLE_ADMIN')" class="hover:underline active:underline cursor-pointer">
+        <a th:href="@{/admin/events}">Manage Events</a>
+      </li>
+
+      <li sec:authorize="hasRole('ROLE_ADMIN')" class="hover:underline active:underline cursor-pointer">
+        <a th:href="@{/admin/reports}">View Report</a>
+      </li>
+
+      <li sec:authorize="isAuthenticated()" class="hover:underline active:underline cursor-pointer">
+        <a th:href="@{/logout}">Logout</a>
+      </li>
+      <li sec:authorize="!isAuthenticated()" class="hover:underline active:underline cursor-pointer">
         <a th:href="@{/registration}"> Register</a>
       </li>
-      <li
-        sec:authorize="!isAuthenticated()"
-        class="hover:underline active:underline cursor-pointer"
-      >
+      <li sec:authorize="!isAuthenticated()" class="hover:underline active:underline cursor-pointer">
         <a th:href="@{/login}">Login</a>
       </li>
     </ul>
   </div>
+
   <script>
     // JavaScript to toggle mobile sidebar visibility
-    document
-      .getElementById("mobile-menu-button")
-      .addEventListener("click", function () {
-        document.getElementById("mobile-sidebar").classList.remove("hidden");
-      });
+    document.getElementById("mobile-menu-button").addEventListener("click", function () {
+      const sidebar = document.getElementById("mobile-sidebar");
+      sidebar.classList.remove("hidden");
+      sidebar.classList.remove("-translate-x-full");
+      // Add a small delay before removing the hidden class to allow the transform to take effect
+      setTimeout(() => {
+        sidebar.classList.remove("transform");
+      }, 0);
+    });
 
-    document
-      .getElementById("close-mobile-sidebar")
-      .addEventListener("click", function () {
-        document.getElementById("mobile-sidebar").classList.add("hidden");
-      });
+    document.getElementById("close-mobile-sidebar").addEventListener("click", function () {
+      const sidebar = document.getElementById("mobile-sidebar");
+      sidebar.classList.add("transform", "-translate-x-full");
+      // Hide the sidebar after the animation completes
+      setTimeout(() => {
+        sidebar.classList.add("hidden");
+      }, 300); // Match the duration of the transition
+    });
   </script>
 </header>

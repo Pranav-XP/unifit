@@ -57,7 +57,6 @@ public class AdminController {
     @GetMapping
     public String adminHomePage(Model model){
         List<Booking> bookings = bookingService.getBookings();
-        Map<String,Long> chartData = countBookingsByFacility(bookings);
         // Filter out past bookings
         LocalDate today = LocalDate.now();
         LocalDate nextWeek = today.plusDays(7);
@@ -69,7 +68,6 @@ public class AdminController {
                 .collect(Collectors.toList());
 
         model.addAttribute("bookings",sortedBookings);
-        model.addAttribute("chartData",chartData);
         return "admin/admin";
     }
 
@@ -289,12 +287,8 @@ public class AdminController {
     }
 
     @GetMapping("/reports")
-    public String reportsPage(Model model) {
-        List<FacilityRevenue> facilityRevenues = facilityService.getMonthlyRevenue(LocalDate.now());
-        model.addAttribute("revenuePerMonth", facilityRevenues);
+    public String reportsPage() {
 
-        Map<String, Double> revenueByFacilityType = facilityService.getRevenueByFacilityType(LocalDate.now().getYear());
-        model.addAttribute("revenueByFacility", revenueByFacilityType);
         return "admin/admin-report";
     }
 }

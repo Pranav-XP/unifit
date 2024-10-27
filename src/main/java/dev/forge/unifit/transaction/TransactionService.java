@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class TransactionService {
         transaction.setBookings(bookings);
         transaction.setAmount(amount);
         transaction.setTransactionTime(LocalDateTime.now());
+        transaction.setCreatedDate(Instant.now());
+        transaction.setLastModifiedDate(Instant.now());
 
         // Set the transaction for each booking
         for (Booking booking : bookings) {
