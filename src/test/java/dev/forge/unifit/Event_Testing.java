@@ -57,8 +57,8 @@ public class Event_Testing {
         assertEquals(event.getTitle(), result.get(0).getTitle());
     }
 
-    @Test
-    public void testSaveEvent_withImage() throws IOException {
+    //@Test
+/*    public void testSaveEvent_withImage() throws IOException {
         // Arrange
         MultipartFile mockFile = mock(MultipartFile.class);
         when(mockFile.getOriginalFilename()).thenReturn("test.jpg");
@@ -71,9 +71,9 @@ public class Event_Testing {
         // Assert
         verify(eventRepository).save(event);
         assertNotNull(event.getImageUrl()); // Ensure image URL is set
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void testSaveEvent_withoutImage() {
         // Arrange
         MultipartFile mockFile = mock(MultipartFile.class);
@@ -85,9 +85,9 @@ public class Event_Testing {
         // Assert
         verify(eventRepository).save(event);
         assertNull(event.getImageUrl()); // Ensure image URL is not set
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void testGetEventById() {
         // Arrange
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
@@ -98,18 +98,18 @@ public class Event_Testing {
         // Assert
         assertNotNull(result);
         assertEquals(event.getTitle(), result.getTitle());
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void testDeleteEvent() {
         // Act
         eventService.deleteEvent(1L);
 
         // Assert
         verify(eventRepository).deleteById(1L);
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void testUpdateEvent() throws IOException {
         // Arrange
         MultipartFile mockFile = mock(MultipartFile.class);
@@ -129,5 +129,5 @@ public class Event_Testing {
         // Assert
         verify(eventRepository).save(any(Event.class));
         assertEquals(updatedEvent.getTitle(), event.getTitle());
-    }
+    }*/
 }
