@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IBookingService {
-    Booking createBooking(BookingFormDTO booking);
+    List<Booking> createBooking(List<BookingFormDTO> bookings);
 
     Booking setMaintenance(BookingFormDTO booking);
 

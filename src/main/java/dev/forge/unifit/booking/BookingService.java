@@ -6,6 +6,7 @@ import dev.forge.unifit.facility.FacilityRepository;
 import dev.forge.unifit.facility.FacilityService;
 
 import dev.forge.unifit.notification.NotificationService;
+import dev.forge.unifit.transaction.TransactionService;
 import dev.forge.unifit.user.User;
 import dev.forge.unifit.user.UserService;
 import jakarta.mail.MessagingException;
@@ -18,9 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.math.BigDecimal;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,45 +34,55 @@ public class BookingService implements IBookingService {
     private final FacilityService facilityService;
     private final UserService userService;
     private final NotificationService notificationService;
+    private final TransactionService transactionService;
     private final EmailService emailService;
 
     @Override
     @Transactional
-    public Booking createBooking(BookingFormDTO form) {
-        Booking booking = new Booking();
-        User user = userService.getUser(form.getUserId());
-        booking.setUser(user);
-        Facility facility = facilityService.getFacility(form.getFacilityId());
+    public List<Booking> createBooking(List<BookingFormDTO> forms) {
+        List<Booking> savedBookings = new ArrayList<>();
+        BigDecimal totalAmount = BigDecimal.ZERO;
 
-        try{
-            Optional<Booking> existingBooking = bookingRepository.findBookingByBookedDateAndStartAndFacility(form.getBookedDate(),form.getStart(),facility.getId());
-            if(existingBooking.isPresent()){
-                throw new IllegalStateException("The selected timeslot is already booked");
+        for (BookingFormDTO form : forms) {
+            Booking booking = new Booking();
+            User user = userService.getUser(form.getUserId());
+            booking.setUser(user);
+            Facility facility = facilityService.getFacility(form.getFacilityId());
+
+            // Check for booking conflict
+            Optional<Booking> existingBooking = bookingRepository.findBookingByBookedDateAndStartAndFacility(
+                    form.getBookedDate(), form.getStart(), facility.getId());
+            if (existingBooking.isPresent()) {
+                throw new IllegalStateException("The selected timeslot is already booked for facility: " + facility.getName());
             }
-        }catch(CannotAcquireLockException e){
-            throw new RuntimeException("Error while creating booking",e);
+
+            booking.setCreatedDate(Instant.now());
+            booking.setLastModifiedDate(Instant.now());
+            booking.setFacility(facility);
+            booking.setBookedDate(form.getBookedDate());
+            booking.setStart(form.getStart());
+            booking.setEnd(form.getEnd());
+            booking.setStatus(BookingStatus.PENDING);
+
+            // Add booking to the list and calculate total amount
+            savedBookings.add(booking);
+            totalAmount = totalAmount.add(BigDecimal.valueOf(booking.getFacility().getFacilityType().getRate()));
         }
-        booking.setFacility(facility);
-        booking.setBookedDate(form.getBookedDate());
-        booking.setStart(form.getStart());
-        booking.setEnd(form.getEnd());
-        booking.setStatus(BookingStatus.PENDING);
 
-        Booking savedBooking = bookingRepository.save(booking);
+        // Use TransactionService to create and save the transaction with all bookings
+        User user = userService.getUser(forms.getFirst().getUserId()); // Assuming all bookings are for the same user
+        transactionService.saveTransactionWithBookings(user, savedBookings, totalAmount);
 
-            BookingNotification notification = new BookingNotification();
-            notification.setBookingId(booking.getId());
-            notification.setCustomerName(booking.getUser().getFirstName());
-            notification.setFacilityName(booking.getFacility().getName());
-            notificationService.notifyAdmin(notification);
+        // Send a single email for the entire list
         try {
-            emailService.sendBookingInvoice(booking.getUser().getEmail(),booking.getUser().getFirstName(),booking,35);
+            emailService.sendBookingInvoice(savedBookings);
         } catch (MessagingException e) {
-            throw new RuntimeException("Email not sent");
+            throw new RuntimeException("Email not sent for bookings", e);
         }
 
-        return savedBooking;
+        return savedBookings;
     }
+
 
     @Override
     public Booking setMaintenance(BookingFormDTO form) {
