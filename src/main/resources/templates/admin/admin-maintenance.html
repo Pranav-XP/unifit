@@ -1,104 +1,98 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Admin Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
-    />
-  </head>
-  <body class="bg-gray-100">
-    <div th:replace="fragments/admin-header.html :: header"></div>
-    <div th:replace="fragments/sidebar :: aside"></div>
-    <main class="p-10 lg:ml-[190px] lg:pt-10 pt-20">
-      <h1 class="text-4xl lg:text-5xl font-bold py-10">Manage Schedule</h1>
-      <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mt-6 mb-8">
-        Select a Facility
-      </h2>
-      <!-- Facilities Container -->
-      <div class="container mx-auto mt-8">
-        <h2 class="text-2xl font-semibold mb-4">Facilities</h2>
-        <!-- Facilities Table -->
-        <table class="min-w-full bg-white border border-gray-200">
-          <thead>
-          <tr class="bg-gray-100">
-            <th class="text-left py-2 px-4 border-b">Facility Name</th>
-            <th class="text-left py-2 px-4 border-b">Status</th>
-            <th class="text-left py-2 px-4 border-b">Weekdays</th>
-            <th class="text-left py-2 px-4 border-b">Weekends</th>
-            <th class="text-left py-2 px-4 border-b">Action</th>
-          </tr>
-          </thead>
-          <tbody>
-          <!-- Iterate over facilities and generate rows -->
-          <tr th:each="facility : ${facilities}" class="hover:bg-gray-50">
-            <td class="py-2 px-4 border-b" th:text="${facility.name}">Name</td>
-            <td class="border-b" th:text="${facility.status.getDisplayName()}" th:class="${facility.status.getStatusColor()}">Status</td>
-            <td class="py-2 px-4 border-b">
-              <span th:text="${#temporals.format(facility.weekdayOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekdayClosingTime, 'h:mma')}">Hours</span>
-            </td>
-            <td class="py-2 px-4 border-b">
-              <span th:text="${#temporals.format(facility.weekendOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekendClosingTime, 'h:mma')}">Hours</span>
-            </td>
-            <td class="py-2 px-4 border-b">
-              <a th:href="@{/admin/maintenance/{id}(id=${facility.id})}"
-                 class="bg-blue-500 font-medium text-center text-white p-2 rounded-md hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
-                Schedule
-              </a>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+<head>
+  <title>UniFit | Admin</title>
+</head>
+<body>
+<div th:replace="~{fragments/admin-dashboard.html}">
+  <div th:fragment="content">
+
+    <h1 class="text-4xl lg:text-5xl font-bold py-10">Manage Schedule</h1>
+    <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mt-6 mb-8">
+      Select a Facility
+    </h2>
+    <!-- Facilities Container -->
+    <div class="container mx-auto mt-8">
+      <h2 class="text-2xl font-semibold mb-4">Facilities</h2>
+      <!-- Facilities Table -->
+      <table class="min-w-full bg-white border border-gray-200">
+        <thead>
+        <tr class="bg-gray-100">
+          <th class="text-left py-2 px-4 border-b">Facility Name</th>
+          <th class="text-left py-2 px-4 border-b">Weekdays</th>
+          <th class="text-left py-2 px-4 border-b">Weekends</th>
+          <th class="text-left py-2 px-4 border-b">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iterate over facilities and generate rows -->
+        <tr th:each="facility : ${facilities}" class="hover:bg-gray-50">
+          <td class="py-2 px-4 border-b" th:text="${facility.name}">Name</td>
+          <td class="py-2 px-4 border-b">
+            <span th:text="${#temporals.format(facility.weekdayOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekdayClosingTime, 'h:mma')}">Hours</span>
+          </td>
+          <td class="py-2 px-4 border-b">
+            <span th:text="${#temporals.format(facility.weekendOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekendClosingTime, 'h:mma')}">Hours</span>
+          </td>
+          <td class="py-2 px-4 border-b">
+            <a th:href="@{/admin/maintenance/{id}(id=${facility.id})}"
+               class="flex gap-1 font-semibold hover:bg-blue-200 bg-blue-100 justify-center p-1 rounded">
+              <i data-lucide="calendar"></i>
+              Schedule
+            </a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
 
 
-      <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mt-6 mb-8">
-        Maintenance Schedule
-      </h2>
+    <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mt-6 mb-8">
+      Maintenance Schedule
+    </h2>
 
-      <div class="overflow-x-auto bg-white rounded-md shadow-md mt-5 p-5">
-        <table class="min-w-full">
-          <thead>
-          <tr>
-            <th class="py-2 px-1 border-b text-left">ID</th>
-            <th class="py-2 px-1 border-b text-left">Facility</th>
-            <th class="py-2 px-1 border-b text-left">Date</th>
-            <th class="py-2 px-1 border-b text-left">Start Time</th>
-            <th class="py-2 px-1 border-b text-left">End Time</th>
-            <!-- Add more columns as needed -->
-          </tr>
-          </thead>
-          <tbody id="bookingTable">
-          <!-- Thymeleaf iteration over bookings -->
-          <tr th:each="schedule : ${schedules}">
-            <td class="py-2 px-2 border-b" th:text="${schedule.id}"></td>
-            <td
-                    class="py-2 px-2 border-b"
-                    th:text="${schedule.facility.name}"
-            ></td>
-            <td
-                    class="py-2 px-2 border-b"
-                    th:text="${schedule.bookedDate}"
-            ></td>
-            <td class="py-2 px-2 border-b" th:text="${schedule.start}"></td>
-            <td class="py-2 px-2 border-b" th:text="${schedule.end}"></td>
+    <div class="overflow-x-auto bg-white rounded-md shadow-md mt-5 p-5">
+      <table class="min-w-full">
+        <thead>
+        <tr>
+          <th class="py-2 px-1 border-b text-left">ID</th>
+          <th class="py-2 px-1 border-b text-left">Facility</th>
+          <th class="py-2 px-1 border-b text-left">Date</th>
+          <th class="py-2 px-1 border-b text-left">Start Time</th>
+          <th class="py-2 px-1 border-b text-left">End Time</th>
+        </tr>
+        </thead>
+        <tbody id="bookingTable">
+        <!-- Thymeleaf iteration over bookings -->
+        <tr th:each="schedule : ${schedules}">
+          <td class="py-2 px-2 border-b" th:text="${schedule.id}"></td>
+          <td
+                  class="py-2 px-2 border-b"
+                  th:text="${schedule.facility.name}"
+          ></td>
+          <td
+                  class="py-2 px-2 border-b"
+                  th:text="${schedule.bookedDate}"
+          ></td>
+          <td class="py-2 px-2 border-b" th:text="${schedule.start}"></td>
+          <td class="py-2 px-2 border-b" th:text="${schedule.end}"></td>
 
-            <td class="py-2 px-2 border-b">
-              <a
-                      th:href="@{'/admin/booking/' + ${schedule.id}}"
-                      class="flex gap-1 font-semibold hover:bg-blue-200 bg-blue-100 justify-center p-1 rounded"
-              >View</a
-              >
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </main>
-  </body>
+          <td class="py-2 px-2 border-b">
+            <a
+                    th:href="@{'/admin/booking/' + ${schedule.id}}"
+                    class="flex gap-1 font-semibold hover:bg-blue-200 bg-blue-100 justify-center p-1 rounded"
+            ><i data-lucide="eye"></i>
+              View</a
+            >
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<script>
+  lucide.createIcons();
+</script>
+</body>
 </html>
