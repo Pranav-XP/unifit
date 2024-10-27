@@ -130,8 +130,8 @@ public class BookingController {
 
         try{
             bookingService.createBooking(bookingList);
-        }catch (RuntimeException e){
-            redirectAttributes.addFlashAttribute("errorMessage", "Could not create booking. Please try again");
+        }catch (IllegalStateException e){
+            redirectAttributes.addFlashAttribute("errorMessage", "Could not create booking. Please try again "+e.getMessage());
             return "redirect:/booking";
         }
 

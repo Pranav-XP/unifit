@@ -291,10 +291,10 @@ public class AdminController {
     @GetMapping("/reports")
     public String reportsPage(Model model) {
         List<FacilityRevenue> facilityRevenues = facilityService.getMonthlyRevenue(LocalDate.now());
-        model.addAttribute("facilityRevenues", facilityRevenues);
+        model.addAttribute("revenuePerMonth", facilityRevenues);
 
         Map<String, Double> revenueByFacilityType = facilityService.getRevenueByFacilityType(LocalDate.now().getYear());
-        model.addAttribute("revenueData", revenueByFacilityType);
+        model.addAttribute("revenueByFacility", revenueByFacilityType);
         return "admin/admin-report";
     }
 }
