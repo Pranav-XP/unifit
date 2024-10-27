@@ -2,6 +2,7 @@ package dev.forge.unifit.event;
 
 import dev.forge.unifit.facility.Facility;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -18,17 +19,19 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Event {
     @Id
+    @Column(unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Size(max = 100, message = "Description must not exceed 100 characters")
     private String title;
 
+    @Size(max = 100, message = "Description must not exceed 100 characters")
     private String eventName;
 
     @Column(columnDefinition = "LONGTEXT")
+    @Size(max = 300, message = "Description must not exceed 300 characters")
     private String description;
-
-/*    private String imageUrl;*/
 
     private String time;
 
