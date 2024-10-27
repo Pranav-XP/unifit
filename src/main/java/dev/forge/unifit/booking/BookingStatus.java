@@ -1,7 +1,7 @@
 package dev.forge.unifit.booking;
 
 public enum BookingStatus {
-    PENDING("Pending"),
+    RESERVED("Reserved"),
     COMPLETE("Completed"),
     DELETED("Cancelled"),
     MAINTENANCE("Maintenance");
@@ -19,7 +19,7 @@ public enum BookingStatus {
 
     public String getStatusColor() {
         return switch (this) {
-            case PENDING -> "bg-yellow-200 text-yellow-800 font-semibold text-center border-b";
+            case RESERVED -> "bg-yellow-200 text-yellow-800 font-semibold text-center border-b";
             case COMPLETE -> "bg-blue-200 text-blue-800 font-semibold text-center border-b";
             case DELETED -> "bg-red-200 text-red-800 font-semibold text-center border-b";
             case MAINTENANCE -> "bg-gray-200 text-gray-800 font-semibold text-center border-b";

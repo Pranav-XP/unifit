@@ -224,7 +224,7 @@ public class Booking_Testing {
 
     @Test
     public void testGetBookingByStatus() {
-        BookingStatus status = BookingStatus.PENDING;
+        BookingStatus status = BookingStatus.RESERVED;
         when(bookingRepository.findAllByStatus(status)).thenReturn(Collections.singletonList(new Booking()));
 
         List<Booking> bookings = bookingService.getBookingByStatus(status);
@@ -236,7 +236,7 @@ public class Booking_Testing {
     @Test
     public void testCancelBookings() {
         Booking booking = new Booking();
-        booking.setStatus(BookingStatus.PENDING);
+        booking.setStatus(BookingStatus.RESERVED);
         List<Booking> bookingsToCancel = Collections.singletonList(booking);
 
         bookingService.cancelBookings(bookingsToCancel);
@@ -286,7 +286,7 @@ public void testSaveBooking() {
     Booking booking = new Booking();
     booking.setId(1L); // Set a mock ID to simulate a saved booking
     booking.setFacility(facility); // Assuming facility is set somewhere in your test
-    booking.setStatus(BookingStatus.PENDING); // Set an initial status
+    booking.setStatus(BookingStatus.RESERVED); // Set an initial status
 
     // Mock the behavior for finding the booking by ID
     when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking)); // Return the booking when found

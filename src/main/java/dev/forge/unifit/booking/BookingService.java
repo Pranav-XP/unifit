@@ -5,6 +5,7 @@ import dev.forge.unifit.facility.Facility;
 import dev.forge.unifit.facility.FacilityRepository;
 import dev.forge.unifit.facility.FacilityService;
 
+import dev.forge.unifit.notification.NotificationController;
 import dev.forge.unifit.notification.NotificationService;
 import dev.forge.unifit.transaction.TransactionService;
 import dev.forge.unifit.user.User;
@@ -36,6 +37,7 @@ public class BookingService implements IBookingService {
     private final NotificationService notificationService;
     private final TransactionService transactionService;
     private final EmailService emailService;
+    private final NotificationController notificationController;
 
     @Override
     @Transactional
@@ -62,7 +64,7 @@ public class BookingService implements IBookingService {
             booking.setBookedDate(form.getBookedDate());
             booking.setStart(form.getStart());
             booking.setEnd(form.getEnd());
-            booking.setStatus(BookingStatus.PENDING);
+            booking.setStatus(BookingStatus.RESERVED);
 
             // Add booking to the list and calculate total amount
             savedBookings.add(booking);
@@ -70,9 +72,10 @@ public class BookingService implements IBookingService {
         }
 
         // Use TransactionService to create and save the transaction with all bookings
-        User user = userService.getUser(forms.getFirst().getUserId()); // Assuming all bookings are for the same user
-        transactionService.saveTransactionWithBookings(user, savedBookings, totalAmount);
-
+        User user = userService.getUser(forms.getFirst().getUserId());
+        List<Booking> addedBookings = bookingRepository.saveAll(savedBookings);// Assuming all bookings are for the same user
+        transactionService.saveTransactionWithBookings(user, addedBookings, totalAmount);
+        notificationController.notifyNewBookings(addedBookings);
         // Send a single email for the entire list
         try {
             emailService.sendBookingInvoice(savedBookings);
@@ -80,7 +83,7 @@ public class BookingService implements IBookingService {
             throw new RuntimeException("Email not sent for bookings", e);
         }
 
-        return savedBookings;
+        return addedBookings;
     }
 
     @Override
