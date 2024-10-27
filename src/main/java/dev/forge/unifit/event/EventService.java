@@ -24,13 +24,10 @@ public class EventService {
         return eventRepository.findAll();
     }
 
-/*    public void saveEvent(Event event, MultipartFile imageFile) {
-        if (imageFile != null && !imageFile.isEmpty()) {
-            String imageName = saveImage(imageFile);
-            event.setImageUrl(imageName);
-        }
+  public void saveEvent(Event event) {
+
         eventRepository.save(event);
-    }*/
+    }
 
     public Event getEventById(Long id) {
         return eventRepository.findById(id).orElse(null);
