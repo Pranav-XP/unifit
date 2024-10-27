@@ -10,55 +10,60 @@
 <div th:replace="fragments/admin-header.html :: header"></div>
 <div th:replace="fragments/sidebar :: aside"></div>
 
-<main class="p-10 lg:ml-[190px] lg:pt-10 pt-20">
+<main class="p-10 lg:ml-[220px] lg:pt-10 pt-20">
   <div class="container mx-auto px-5">
-    <section class="px-5 pb-5">
-      <h1 class="text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl px-5 py-6 lg:py-10 font-bold">Edit Event</h1>
-      <form class="flex flex-col gap-3 px-4 md:px-10 w-full pb-10"
+    <section class="bg-white shadow-md rounded-lg p-6">
+      <h1 class="text-2xl lg:text-3xl xl:text-4xl font-bold mb-6">Edit Event</h1>
+      <form class="space-y-4"
             th:action="@{/events/edit/{id}(id=${event.id})}"
             th:object="${event}"
             method="post"
-            enctype="multipart/form-data"> <!-- Add this line -->
+            enctype="multipart/form-data">
 
         <!-- Event Name Field -->
-        <div class="mb-4">
-          <label for="eventName" class="text-gray-700 text-sm font-bold mb-2">Event Name:</label>
+        <div>
+          <label for="eventName" class="text-gray-700 text-sm font-bold">Event Name:</label>
           <input
-                  class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+                  class="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   type="text"
                   id="eventName"
                   th:field="*{eventName}"
                   required />
         </div>
 
-        <div class="mb-4">
-          <label for="title" class="text-gray-700 text-sm font-bold mb-2">Title:</label>
+        <!-- Title Field -->
+        <div>
+          <label for="title" class="text-gray-700 text-sm font-bold">Title:</label>
           <input
-                  class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+                  class="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   type="text"
                   id="title"
                   th:field="*{title}"
                   required />
         </div>
 
-        <label for="facility" class="text-gray-700 text-sm font-bold mt-4">Facility:</label>
-        <select class="border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
-                name="facility"
-                id="facility"
-                th:field="*{facility.id}"
-                required>
-          <option value="" disabled selected>Select a Facility</option>
-          <th:block th:each="facility : ${facilities}">
-            <option
-                    th:value="${facility.id}"
-                    th:text="${facility.name}"></option>
-          </th:block>
-        </select>
+        <!-- Facility Selection -->
+        <div>
+          <label for="facility" class="text-gray-700 text-sm font-bold">Facility:</label>
+          <select class="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  name="facility"
+                  id="facility"
+                  th:field="*{facility.id}"
+                  required>
+            <option value="" disabled selected>Select a Facility</option>
+            <th:block th:each="facility : ${facilities}">
+              <option
+                      th:value="${facility.id}"
+                      th:text="${facility.name}"></option>
+            </th:block>
+          </select>
+        </div>
 
-        <div class="mb-4">
-          <label for="description" class="text-gray-700 text-sm font-bold mb-2">Description:</label>
+        <!-- Description Field -->
+        <div>
+          <label for="description" class="text-gray-700 text-sm font-bold">Description:</label>
           <textarea
-                  class="w-full px-3 py-2 border rounded-md"
+                  class="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   id="description"
                   name="description"
                   th:field="*{description}"
@@ -66,34 +71,38 @@
                   required></textarea>
         </div>
 
-        <!-- Image Input -->
-        <label for="image" class="text-gray-700 text-sm font-bold mb-2">Image:</label>
-        <input
-                class="border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
-                type="file"
-                id="image"
-                name="image" />
+        <!--
+                &lt;!&ndash; Image Input &ndash;&gt;
+                <div>
+                  <label for="image" class="text-gray-700 text-sm font-bold">Image:</label>
+                  <input
+                          class="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          type="file"
+                          id="image"
+                          name="image" />
+                </div>
+        -->
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <div>
-            <label for="eventDateTime" class="text-gray-700 text-sm font-bold">Event Date and Time:</label>
-            <input class="border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
-                   type="datetime-local"
-                   id="eventDateTime"
-                   th:field="*{eventDateTime}"
-                   th:value="${event.eventDateTime}"
-                   required />
-          </div>
+        <!-- Event Date and Time -->
+        <div>
+          <label for="eventDateTime" class="block text-gray-700 text-sm font-bold mb-2">Event Date and Time:</label>
+          <input class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+                 type="datetime-local"
+                 id="eventDateTime"
+                 name="eventDateTime"
+                 th:value="${event.eventDateTime}"
+                 th:min="${minDateTime}"
+                 required />
         </div>
 
-
-        <button class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue mt-4"
+        <!-- Submit Button -->
+        <button class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 type="submit">Update Event</button>
       </form>
-
-      <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     </section>
   </div>
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </body>
 </html>

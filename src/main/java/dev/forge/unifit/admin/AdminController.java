@@ -257,11 +257,11 @@ public class AdminController {
 
     @PostMapping("/events/create")
     public String createEvent(@ModelAttribute("event") Event event,
-                              @RequestParam("facilityId") Long facilityId,
-                              @RequestParam("image") MultipartFile imageFile) {
+                              @RequestParam("facilityId") Long facilityId/*,
+                              @RequestParam("image") MultipartFile imageFile*/) {
         Facility facility = facilityService.getFacility(facilityId);
         event.setFacility(facility);
-        eventService.saveEvent(event, imageFile);  // Now passing the image file to the service
+        /*        eventService.saveEvent(event, imageFile);  // Now passing the image file to the service*/
         return "redirect:/admin/events";
     }
 
@@ -276,11 +276,11 @@ public class AdminController {
 
     @PostMapping("/events/update")
     public String updateEvent(@ModelAttribute("event") Event event,
-                              @RequestParam("facilityId") Long facilityId,
-                              @RequestParam("image") MultipartFile imageFile) {
+                              @RequestParam("facilityId") Long facilityId/*,
+                              @RequestParam("image") MultipartFile imageFile*/) {
         Facility facility = facilityService.getFacility(facilityId);
         event.setFacility(facility);
-        eventService.saveEvent(event, imageFile);  // Now passing the image file to the service
+        /*        eventService.saveEvent(event, imageFile);  // Now passing the image file to the service*/
         return "redirect:/admin/events";
     }
 

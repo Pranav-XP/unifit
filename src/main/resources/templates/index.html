@@ -15,8 +15,17 @@
 </head>
 <body>
 <div th:replace="fragments/header :: header"></div>
-<main class="mt-[88px]">
-  <!-- Hero Section -->
+
+<section class="bg-blue-900 text-white text-center py-16 mt-5">
+  <div class="container mx-auto" style="margin-top: 5%">
+    <h1 class="text-4xl lg:text-6xl font-bold mb-4">Welcome to UniFit</h1>
+    <p class="text-lg lg:text-xl mb-6">Your one-stop solution for fitness and wellness.</p>
+    <a href="/facilities" class="inline-block bg-white text-blue-900 rounded-lg px-6 py-3 font-semibold shadow-lg hover:bg-blue-100 transition duration-300">Explore Facilities</a>
+  </div>
+</section>
+
+<main class="flex flex-col md:flex-row mt-4"><!--class="mt-[88px]"-->
+<!--  &lt;!&ndash; Hero Section &ndash;&gt;
   <section class="bg-blue-900 text-white text-center py-16">
     <div class="container mx-auto">
       <h1 class="text-4xl lg:text-6xl font-bold mb-4">
@@ -29,10 +38,10 @@
         Explore Facilities
       </a>
     </div>
-  </section>
+  </section>-->
 
-
-
+  <section class="bg-gray-100 flex-grow p-6 md:w-3/4">
+  <h2 class="text-3xl font-bold mb-6">Facilities</h2>
   <!-- Check if facilities list is not empty -->
   <th:block th:if="${not #lists.isEmpty(facilities)}">
     <div class="container mx-auto py-10 px-6 md:px-28">
@@ -92,6 +101,38 @@
   <th:block th:if="${#lists.isEmpty(facilities)}">
     <p class="text-gray-500 text-center">No facilities available.</p>
   </th:block>
+  </section>
+
+  <aside class="w-full md:w-1/4 bg-blue-100 p-6 border-l md:border-l-0 md:border-t md:rounded-t-none rounded-t-lg md:rounded-lg mt-6 md:mt-0 shadow-lg">
+    <h2 class="text-3xl font-bold text-blue-800 mb-6">Upcoming Events</h2>
+
+    <th:block th:if="${not #lists.isEmpty(events)}">
+      <div class="grid grid-cols-1 gap-6">
+        <div th:each="event : ${events}"
+             th:if="${event.eventDateTime.isAfter(T(java.time.LocalDateTime).now())}"
+             class="bg-white rounded-lg border border-blue-200 overflow-hidden shadow-md flex flex-col p-4">
+          <div class="flex flex-col justify-between">
+            <h3 class="text-lg font-bold text-blue-800" th:text="${event.title}">Event Title</h3>
+            <!-- Display Date and Time -->
+            <p class="text-blue-600" th:text="${#temporals.format(event.eventDateTime, 'dd MMM yyyy, hh:mm a')}">
+              <!-- Sample formatted output: 27 Oct 2024, 03:00 PM -->
+            </p>
+          </div>
+          <div class="mt-4">
+            <h4 class="font-semibold text-blue-700">Facility:</h4>
+            <p class="text-gray-700">
+              <span th:text="${event.facility.name}">Facility Name</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </th:block>
+
+
+    <th:block th:if="${#lists.isEmpty(events)}">
+      <p class="text-gray-500 text-center">No upcoming events available.</p>
+    </th:block>
+  </aside>
 </main>
 
 <footer class="bg-gray-800 text-white text-center py-6 mt-12">
