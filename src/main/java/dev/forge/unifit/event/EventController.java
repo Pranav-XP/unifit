@@ -34,17 +34,13 @@ public class EventController {
     }
 
     @PostMapping("/create")
-    public String createEvent(@ModelAttribute Event event, @RequestParam("image") MultipartFile imageFile) {
+    public String createEvent(@ModelAttribute Event event) {
         // Ensure the eventDateTime is parsed correctly
         if (event.getEventDateTime() == null) {
             throw new IllegalArgumentException("Event DateTime is required");
         }
 
-        // Save image and set imageUrl in the event
-        String imageName = eventService.saveImage(imageFile);
-        event.setImageUrl(imageName);
 
-        eventService.saveEvent(event, imageFile); // Save event with image URL
         return "redirect:/events"; // redirect to the events page after saving
     }
 
@@ -58,9 +54,8 @@ public class EventController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editEvent(@PathVariable Long id, @ModelAttribute Event event, @RequestParam(value = "image", required = false) MultipartFile imageFile) {
+    public String editEvent(@PathVariable Long id, @ModelAttribute Event event) {
         event.setId(id); // ensure the ID is set for updating
-        eventService.updateEvent(id, event, imageFile); // updated to use the update method in the service
         return "redirect:/events"; // redirect to the events page after updating
     }
 

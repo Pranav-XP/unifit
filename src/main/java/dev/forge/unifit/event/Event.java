@@ -28,7 +28,7 @@ public class Event {
     @Column(columnDefinition = "LONGTEXT")
     private String description;
 
-    private String imageUrl;
+
 
     private String time;
 
