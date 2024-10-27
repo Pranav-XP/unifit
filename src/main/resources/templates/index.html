@@ -1,159 +1,237 @@
-<!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UniFit</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <style>
-    /* Custom styles for smoother scroll and icon adjustments */
-    .icon {
-      width: 50px;
-      height: 50px;
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'hoops-blue': '#0046B8',
+            'hoops-light': '#E8F0FE',
+          }
+        }
+      }
     }
-  </style>
+  </script>
 </head>
-<body>
-<div th:replace="fragments/header :: header"></div>
-
-<section class="bg-blue-900 text-white text-center py-16 mt-5">
-  <div class="container mx-auto" style="margin-top: 5%">
-    <h1 class="text-4xl lg:text-6xl font-bold mb-4">Welcome to UniFit</h1>
-    <p class="text-lg lg:text-xl mb-6">Your one-stop solution for fitness and wellness.</p>
-    <a href="/facilities" class="inline-block bg-white text-blue-900 rounded-lg px-6 py-3 font-semibold shadow-lg hover:bg-blue-100 transition duration-300">Explore Facilities</a>
-  </div>
-</section>
-
-<main class="flex flex-col md:flex-row mt-4"><!--class="mt-[88px]"-->
-<!--  &lt;!&ndash; Hero Section &ndash;&gt;
-  <section class="bg-blue-900 text-white text-center py-16">
-    <div class="container mx-auto">
-      <h1 class="text-4xl lg:text-6xl font-bold mb-4">
-        Welcome to UniFit
-      </h1>
-      <p class="text-lg lg:text-xl mb-6">
-        Your one-stop solution for fitness and wellness.
-      </p>
-      <a href="/facilities" class="inline-block bg-white text-blue-900 rounded-lg px-6 py-3 font-semibold shadow-lg hover:bg-blue-100 transition duration-300">
-        Explore Facilities
-      </a>
+<body class="bg-hoops-light">
+<div class="max-w-6xl mx-auto p-4">
+  <!-- Navigation Bar -->
+  <nav class="flex justify-between items-center mb-8">
+    <div class="flex items-center space-x-2">
+      <button class="px-4 py-2 text-hoops-blue hover:text-blue-700">Main Home</button>
     </div>
-  </section>-->
+    <div class="flex items-center">
+<span class="inline font-extrabold text-3xl text-blue-900 transform transition hover:scale-105 duration-300">
+    Uni<span class="text-blue-500">Fit <i data-lucide="graduation-cap" class=" w-8 h-8 inline-block align-middle"></i></span>
+</span>
 
-  <section class="bg-gray-100 flex-grow p-6 md:w-3/4">
-  <h2 class="text-3xl font-bold mb-6">Facilities</h2>
-  <!-- Check if facilities list is not empty -->
-  <th:block th:if="${not #lists.isEmpty(facilities)}">
-    <div class="container mx-auto py-10 px-6 md:px-28">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Iterate over facilities and generate information sections -->
-        <div
-                th:each="facility : ${facilities}"
-                class="bg-white rounded-lg border overflow-hidden shadow-md flex flex-col"
-        >
-          <!-- Facility Image -->
-          <div class="h-48 w-full overflow-hidden">
-            <img
-                    th:src="${facility.imageUrl}"
-                    alt="Facility Image"
-                    class="w-full h-full object-cover"
-            />
-          </div>
+    </div>
+    <div>
+      <a th:href="@{/login}" class="bg-hoops-blue text-white px-6 py-2 rounded-full hover:bg-blue-700 transition flex items-center">
+        Login
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
 
-          <!-- Text Section -->
-          <div class="p-6 flex flex-col justify-between">
-            <div>
-              <div class="flex justify-between items-center mb-3">
-                <h2 class="text-2xl font-bold" th:text="${facility.name}">Facility Name</h2>
-                <!-- Status with dynamic color -->
-                <div
-                        th:text="${facility.status.getDisplayName()}"
-                        th:class="${facility.status.getStatusColor()}"
-                        class="text-sm font-medium px-2 py-1 rounded"
-                ></div>
-              </div>
-              <p class="text-gray-700 mb-5" th:text="${facility.description}"></p>
-            </div>
+    </div>
+  </nav>
 
-            <!-- Facility Info -->
-            <div>
-              <h3 class="font-bold text-lg mb-2">Opening Hours:</h3>
-              <p class="mb-1">
-                <span class="font-bold">Weekdays:</span>
-                <span
-                        th:text="${#temporals.format(facility.weekdayOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekdayClosingTime, 'h:mma')}"
-                ></span>
-              </p>
-              <p class="mb-1">
-                <span class="font-bold">Weekends:</span>
-                <span
-                        th:text="${#temporals.format(facility.weekendOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekendClosingTime, 'h:mma')}"
-                ></span>
-              </p>
-            </div>
-          </div>
-        </div>
+  <!-- Main Content -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+    <!-- Left Section - Text -->
+    <div class="flex flex-col justify-center">
+      <h1 class="text-5xl font-bold italic mb-6 text-gray-800">
+        Forget being<br/> Un-fit
+ Choose<br/>
+        <span class="inline-block font-extrabold text-8xl text-blue-900 transform transition hover:scale-105 duration-300">
+    Uni<span class="text-blue-500">Fit</span></span>
+      </h1>
+      <button class="bg-hoops-blue text-white px-6 py-3 rounded-full hover:bg-blue-700 transition w-fit flex items-center">
+        Enter Into The Court
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Right Section - Image Grid -->
+    <div class="grid grid-cols-2 gap-2">
+      <div class="bg-white/50 rounded-lg h-48 shadow-md"></div>
+      <div class="bg-white/50 rounded-lg h-48 shadow-md"></div>
+      <div class="bg-white/50 rounded-lg h-48 shadow-md"></div>
+      <div class="bg-white/50 rounded-lg h-48 shadow-md"></div>
+    </div>
+  </div>
+
+  <!-- Steps Section -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+    <!-- Step 1 -->
+    <div class="bg-gradient-to-r from-blue-300 to-cyan-200 text-white p-8 rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-300">
+      <h3 class="text-lg font-semibold mb-4 text-blue-900 uppercase">Step 1</h3>
+      <h2 class="text-3xl text-gray-900 mb-8 font-bold">Choose Your Arena</h2>
+      <p class="mb-4 text-blue-800">Pick where the action happens:</p>
+
+      <div class="space-y-3">
+        <label class="flex items-center space-x-3 cursor-pointer">
+          <input type="radio" name="court" id="indoor" class="form-radio text-cyan-400">
+          <span>Indoor</span>
+        </label>
+        <label class="flex items-center space-x-3 cursor-pointer">
+          <input type="radio" name="court" id="street" class="form-radio text-cyan-400" checked>
+          <span>Street</span>
+        </label>
+        <label class="flex items-center space-x-3 cursor-pointer">
+          <input type="radio" name="court" id="complex" class="form-radio text-cyan-400">
+          <span>Complex</span>
+        </label>
       </div>
     </div>
-  </th:block>
 
-  <!-- Display a message if facilities list is empty -->
-  <th:block th:if="${#lists.isEmpty(facilities)}">
-    <p class="text-gray-500 text-center">No facilities available.</p>
-  </th:block>
+    <!-- Step 2 -->
+    <div class="bg-gradient-to-r from-cyan-200 to-blue-200 text-white p-8 rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-300">
+      <h3 class="text-lg font-semibold mb-4 text-blue-900 uppercase">Step 2</h3>
+      <h2 class="text-3xl mb-8 font-bold text-gray-900">Pick a Date</h2>
+      <p class="mb-4 text-blue-800">When do you want to play?</p>
+
+      <div class="flex items-center justify-between bg-blue-300/70 rounded-lg p-4">
+        <button class="text-2xl w-12 h-12 flex items-center justify-center hover:bg-blue-400 rounded-full transition">-</button>
+        <span class="text-xl flex items-center text-blue-900">
+        <i data-lucide="calendar" class="mr-2"></i>
+        Choose Date
+      </span>
+        <button class="text-2xl w-12 h-12 flex items-center justify-center hover:bg-blue-400 rounded-full transition">+</button>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-900 p-8 rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-300">
+      <h3 class="text-lg font-semibold mb-4 text-blue-900 uppercase">Step 3</h3>
+      <h2 class="text-3xl mb-8 font-bold text-gray-900">Pick a Time &amp; Book!</h2>
+      <p class="mb-4 text-blue-800">Secure your spot and get ready to go!</p>
+
+      <div class="flex justify-center mt-6">
+        <button class="bg-cyan-300 text-blue-800 font-semibold px-6 py-3 rounded-lg shadow hover:bg-cyan-400 transition">
+          Book Now
+        </button>
+      </div>
+    </div>
   </section>
 
-  <aside class="w-full md:w-1/4 bg-blue-100 p-6 border-l md:border-l-0 md:border-t md:rounded-t-none rounded-t-lg md:rounded-lg mt-6 md:mt-0 shadow-lg">
-    <h2 class="text-3xl font-bold text-blue-800 mb-6">Upcoming Events</h2>
-
-    <th:block th:if="${not #lists.isEmpty(events)}">
-      <div class="grid grid-cols-1 gap-6">
-        <div th:each="event : ${events}"
-             th:if="${event.eventDateTime.isAfter(T(java.time.LocalDateTime).now())}"
-             class="bg-white rounded-lg border border-blue-200 overflow-hidden shadow-md flex flex-col p-4">
-          <div class="flex flex-col justify-between">
-            <h3 class="text-lg font-bold text-blue-800" th:text="${event.title}">Event Title</h3>
-            <!-- Display Date and Time -->
-            <p class="text-blue-600" th:text="${#temporals.format(event.eventDateTime, 'dd MMM yyyy, hh:mm a')}">
-              <!-- Sample formatted output: 27 Oct 2024, 03:00 PM -->
-            </p>
-          </div>
-          <div class="mt-4">
-            <h4 class="font-semibold text-blue-700">Facility:</h4>
-            <p class="text-gray-700">
-              <span th:text="${event.facility.name}">Facility Name</span>
-            </p>
-          </div>
+  <!-- Facility Cards Section -->
+  <section class="mt-10">
+    <h2 class="text-2xl font-bold text-blue-900 mb-6">Facility's to Fuel Your Fitness Needs</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Example Facility Card -->
+      <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+        <img src="facility-image-url.jpg" alt="Facility Name" class="rounded-t-lg w-full h-40 object-cover">
+        <div class="p-4">
+          <h3 class="text-lg font-semibold text-blue-900">Facility Name</h3>
+          <p class="text-gray-700 mb-2">Description of the facility. It should give a brief overview of what the facility offers.</p>
+          <p class="text-blue-600 font-bold">Status: Available</p>
+          <a href="#" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">View Details</a>
         </div>
       </div>
-    </th:block>
 
-
-    <th:block th:if="${#lists.isEmpty(events)}">
-      <p class="text-gray-500 text-center">No upcoming events available.</p>
-    </th:block>
-  </aside>
-</main>
-
-<footer class="bg-gray-800 text-white text-center py-6 mt-12">
-  <div class="container mx-auto">
-    <p class="mb-4">Follow Us</p>
-    <div class="flex justify-center space-x-4">
-      <a href="#" class="text-gray-400 hover:text-white">
-        <i class="fab fa-facebook-f icon"></i>
-      </a>
-      <a href="#" class="text-gray-400 hover:text-white">
-        <i class="fab fa-twitter icon"></i>
-      </a>
-      <a href="#" class="text-gray-400 hover:text-white">
-        <i class="fab fa-instagram icon"></i>
-      </a>
-      <a href="#" class="text-gray-400 hover:text-white">
-        <i class="fab fa-linkedin-in icon"></i>
-      </a>
+      <!-- Repeat the card structure for each facility -->
+      <!-- Example of a dynamic facility card (using Thymeleaf for Spring Boot) -->
+      <div th:each="facility : ${facilities}" class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+        <img th:src="${facility.imageUrl}" alt="Facility Name" class="rounded-t-lg w-full h-40 object-cover">
+        <div class="p-4">
+          <h3 class="text-lg font-semibold text-blue-900" th:text="${facility.name}">Facility Name</h3>
+          <p class="text-gray-700 mb-2" th:text="${facility.description}">Description of the facility.</p>
+          <p class="size-1" th:class="${facility.status.getStatusColor()}" th:text="${facility.status}">Status: Available</p>
+          <a th:href="@{/facilities/{id}(id=${facility.id})}" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">View Details</a>
+        </div>
+      </div>
     </div>
-    <p class="mt-4">&copy; 2024 UniFit. All rights reserved.</p>
+  </section>
+
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script> lucide.createIcons(); </script>
+
+  <!-- FAQ Section -->
+  <div class="max-w-6xl mx-auto p-4 mt-16">
+    <h2 class="text-3xl font-bold text-gray-800 mb-8">Frequently Asked Questions</h2>
+
+    <div class="space-y-4">
+      <!-- FAQ Item 1 -->
+      <div class="border border-blue-200 rounded-lg bg-white">
+        <button class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-blue-50 transition-colors rounded-lg focus:outline-none" onclick="toggleFAQ(this)">
+          <span class="text-lg font-semibold text-gray-800">How does team matching work?</span>
+          <svg class="w-6 h-6 text-hoops-blue transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div class="hidden px-6 pb-4 text-gray-600">
+          <p>Our advanced matching system considers your skill level, playing style, location, and availability to connect you with compatible teammates. We use a rating system and player preferences to ensure balanced and enjoyable matchups.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 2 -->
+      <div class="border border-blue-200 rounded-lg bg-white">
+        <button class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-blue-50 transition-colors rounded-lg focus:outline-none" onclick="toggleFAQ(this)">
+          <span class="text-lg font-semibold text-gray-800">What types of courts are available?</span>
+          <svg class="w-6 h-6 text-hoops-blue transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div class="hidden px-6 pb-4 text-gray-600">
+          <p>We offer access to various court types including indoor gymnasiums, outdoor street courts, and professional complexes. Each venue is verified for quality and safety, and many include amenities like lighting, seating, and water stations.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 3 -->
+      <div class="border border-blue-200 rounded-lg bg-white">
+        <button class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-blue-50 transition-colors rounded-lg focus:outline-none" onclick="toggleFAQ(this)">
+          <span class="text-lg font-semibold text-gray-800">Is there a membership fee?</span>
+          <svg class="w-6 h-6 text-hoops-blue transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div class="hidden px-6 pb-4 text-gray-600">
+          <p>We offer both free and premium membership tiers. Basic membership is free and includes court finding and basic team matching. Premium members get additional features like priority matching, advanced stats tracking, and exclusive event access.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 4 -->
+      <div class="border border-blue-200 rounded-lg bg-white">
+        <button class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-blue-50 transition-colors rounded-lg focus:outline-none" onclick="toggleFAQ(this)">
+          <span class="text-lg font-semibold text-gray-800">How do I organize a game?</span>
+          <svg class="w-6 h-6 text-hoops-blue transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div class="hidden px-6 pb-4 text-gray-600">
+          <p>Simply select your preferred court, date, and time, then specify how many players you need. Our system will notify compatible players in your area. Once enough players accept, the game is automatically confirmed, and all participants receive court details and teammate information.</p>
+        </div>
+      </div>
+    </div>
   </div>
-</footer>
+
+  <script>
+    function toggleFAQ(button) {
+      // Toggle the answer visibility
+      const answer = button.nextElementSibling;
+      const icon = button.querySelector('svg');
+
+      // Toggle the answer
+      answer.classList.toggle('hidden');
+
+      // Rotate the icon
+      if (answer.classList.contains('hidden')) {
+        icon.classList.remove('rotate-180');
+      } else {
+        icon.classList.add('rotate-180');
+      }
+    }
+  </script>
+</div>
 </body>
 </html>
