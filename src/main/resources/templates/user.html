@@ -52,7 +52,7 @@
             ></td>
             <td
               class="py-2 px-2"
-              th:class="${T(dev.forge.unifit.booking.BookingStatus).getStatusColor(booking.status)}"
+               th:class="${booking.status.getStatusColor()}"
               th:text="${booking.status.getDisplayName()}"
             ></td>
 
@@ -96,7 +96,7 @@
             <td class="py-2 px-2 border-b" th:text="${booking.end}"></td>
             <td
               class="py-2 px-2"
-              th:class="${T(dev.forge.unifit.booking.BookingStatus).getStatusColor(booking.status)}"
+               th:class="${booking.status.getStatusColor()}"
               th:text="${booking.status.getDisplayName()}"
             ></td>
 

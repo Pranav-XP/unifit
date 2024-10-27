@@ -40,7 +40,7 @@
               <!-- Status with dynamic color -->
               <div
                       th:text="${facility.status.getDisplayName()}"
-                      th:class="${T(dev.forge.unifit.facility.FacilityStatus).getStatusColor(facility.status)}"
+                      th:class="${facility.status.getStatusColor()}"
                       class="text-sm font-medium px-2 py-1 rounded"
               ></div>
             </div>

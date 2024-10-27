@@ -45,7 +45,7 @@
             </h2>
             <div
                     th:text="${facility.status.getDisplayName()}"
-                    th:class="${T(dev.forge.unifit.facility.FacilityStatus).getStatusColor(facility.status)}"
+                    th:class="${facility}"
             ></div>
           </div>
           <p class="mb-4 font-semibold">

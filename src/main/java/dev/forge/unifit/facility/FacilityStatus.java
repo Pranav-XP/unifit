@@ -16,8 +16,8 @@ public enum FacilityStatus {
         return displayName;
     }
 
-    public static String getStatusColor(FacilityStatus status) {
-        return switch (status) {
+    public String getStatusColor() {
+        return switch (this) {
             case AVAILABLE -> "bg-green-300 text-sm text-green-800 p-0.5 rounded-md font-semibold";
             case UNAVAILABLE -> "bg-red-300 text-sm text-red-800 p-0.5 rounded-md font-semibold";
             case MAINTENANCE -> "bg-yellow-300 text-yellow-800 text-sm rounded-md font-semibold";

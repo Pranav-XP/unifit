@@ -7,6 +7,7 @@ public enum BookingStatus {
     MAINTENANCE("Maintenance");
 
     private final String displayName;
+    private
 
     BookingStatus(String displayName) {
         this.displayName = displayName;
@@ -16,8 +17,8 @@ public enum BookingStatus {
         return displayName;
     }
 
-    public static String getStatusColor(BookingStatus status) {
-        return switch (status) {
+    public String getStatusColor() {
+        return switch (this) {
             case PENDING -> "bg-yellow-200 text-yellow-800 font-semibold text-center border-b";
             case COMPLETE -> "bg-blue-200 text-blue-800 font-semibold text-center border-b";
             case DELETED -> "bg-red-200 text-red-800 font-semibold text-center border-b";
