@@ -55,25 +55,6 @@
               th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
               required
             />
-
-            <label for="startTime" class="font-semibold">Start Time:</label>
-            <input
-              class="p-2 rounded"
-              type="time"
-              required
-              id="startTime"
-              th:field="*{start}"
-            />
-
-            <label for="endTime" class="font-semibold">End Time:</label>
-            <input
-              class="p-2 rounded"
-              type="time"
-              required
-              id="endTime"
-              th:field="*{end}"
-            />
-
             <button
               type="submit"
               class="border border-blue-600 text-lg lg:text-base bg-blue-500 px-5 py-2 rounded-md font-semibold hover:bg-blue-600 text-white w-full"

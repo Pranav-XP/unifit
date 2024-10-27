@@ -83,31 +83,39 @@ public class BookingService implements IBookingService {
         return savedBookings;
     }
 
-
     @Override
     public Booking setMaintenance(BookingFormDTO form) {
         Booking booking = new Booking();
         User user = userService.getUser(form.getUserId());
         booking.setUser(user);
-        Facility facility = facilityService.getFacility(form.getFacilityId());
 
+        Facility facility = facilityService.getFacility(form.getFacilityId());
         booking.setFacility(facility);
-        booking.setBookedDate(form.getBookedDate());
-        booking.setStart(form.getStart());
-        booking.setEnd(form.getEnd());
+
+        // Set the booked date for the maintenance booking
+        LocalDate bookedDate = form.getBookedDate();
+        booking.setBookedDate(bookedDate);
+
+        // Set maintenance period for 24 hours based on the booked date
+        LocalTime maintenanceStart = bookedDate.atStartOfDay().toLocalTime(); // Start of the booked date
+        LocalTime maintenanceEnd = maintenanceStart.plusHours(24); // 24 hours later
+
+        booking.setStart(maintenanceStart);
+        booking.setEnd(maintenanceEnd);
         booking.setStatus(BookingStatus.MAINTENANCE);
 
+        // Save the maintenance booking
         Booking savedBooking = bookingRepository.save(booking);
 
-        List<Booking> cancelledBookings = bookingRepository.findBookingsBetweenMaintenanceTimes(
-                form.getBookedDate(),
-                facility,
-                form.getStart(),
-                form.getEnd());
+        // Cancel all bookings for the specified booked date
+        List<Booking> cancelledBookings = bookingRepository.findBookingByBookedDateAndFacility(bookedDate,facility);
 
+        // Cancel all the bookings found for that date
         cancelBookings(cancelledBookings);
+
         return savedBooking;
     }
+
 
     @Override
     public List<Booking> getBookingByStatus(BookingStatus status) {
@@ -122,9 +130,9 @@ public class BookingService implements IBookingService {
                 booking.setStatus(BookingStatus.DELETED);
             }
             try {
-
+                emailService.sendCancellation(booking);
                 Thread.sleep(2000);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | MessagingException e) {
                 throw new RuntimeException(e);
             }
         }

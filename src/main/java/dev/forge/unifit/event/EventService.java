@@ -24,7 +24,6 @@ public class EventService {
     }
 
     public Event saveEvent(Event event) {
-        System.out.println("FACILITY NAME IS "+event.getFacility().getId());
         return eventRepository.save(event);
     }
 
@@ -47,8 +46,6 @@ public class EventService {
             existingEvent.setDescription(updatedEvent.getDescription());
             existingEvent.setEventDateTime(updatedEvent.getEventDateTime()); // Ensure this is set
             existingEvent.setFacility(updatedEvent.getFacility());
-
-
             eventRepository.save(existingEvent);
         }
     }

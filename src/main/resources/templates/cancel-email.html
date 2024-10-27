@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Booking Cancellation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #e74c3c; /* Red for cancellation */
+        }
+        p {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #666;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #aaa;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Your Booking has been Canceled</h1>
+    <p>Dear <strong th:text="${customerName}">User</strong>,</p>
+    <p>We regret to inform you that your booking has been canceled. Below are the details:</p>
+
+    <p><strong>Booking ID:</strong> <span th:text="${booking.id}">Booking ID</span></p>
+    <p><strong>Facility:</strong> <span th:text="${booking.facility.name}">Facility Name</span></p>
+    <p><strong>Date:</strong> <span th:text="${#temporals.format(booking.bookedDate, 'dd/MM/yyyy')}">Booked Date</span></p>
+    <p><strong>Start Time:</strong> <span th:text="${booking.start}">Start Time</span></p>
+    <p><strong>End Time:</strong> <span th:text="${booking.end}">End Time</span></p>
+
+    <p>If you have any questions or need further assistance, please feel free to contact us for your refund.</p>
+
+    <div class="footer">
+        Best regards,<br>
+        The UniFit Team
+    </div>
+</div>
+</body>
+</html>

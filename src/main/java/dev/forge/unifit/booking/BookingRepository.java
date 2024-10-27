@@ -52,7 +52,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
     List<Booking> findBookingsByYear(@Param("year") int year);
 
     List<Booking> findByBookedDateBetween(LocalDate startDate, LocalDate endDate);
-
+    List<Booking> findBookingByBookedDateAndFacility(LocalDate bookedDate,Facility facility);
 
 
     //Integer countBookingsByFacility(Facility facility);

@@ -110,4 +110,37 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    public void sendCancellation(Booking booking) throws MessagingException {
+        // Create email
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper;
+
+        try {
+            helper = new MimeMessageHelper(message, true);
+        } catch (MessagingException e) {
+            throw new RuntimeException("MessageHelper could not be created", e);
+        }
+
+        // Get the recipient email and customer name from the first booking
+        String recipientEmail = booking.getUser().getEmail(); // Assuming User object has getEmail method
+        String customerName = booking.getUser().getFirstName(); // Assuming User object has getFirstName method
+
+        helper.setTo(recipientEmail);
+        helper.setSubject("UniFit Cancellation");
+
+        // Prepare the context for the Thymeleaf template
+        Context context = new Context();
+        context.setVariable("customerName", customerName);
+
+        // Set the booking details and total price in the context
+        context.setVariable("booking", booking);
+
+        // Load and populate the Thymeleaf template
+        String htmlContent = templateEngine.process("cancel-email", context);
+        helper.setText(htmlContent, true);
+
+        // Send the email
+        mailSender.send(message);
+    }
+
 }
