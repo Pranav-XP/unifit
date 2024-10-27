@@ -22,49 +22,40 @@
       </h2>
       <!-- Facilities Container -->
       <div class="container mx-auto mt-8">
-        <!-- Facility Cards -->
-        <div
-                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
-        >
-          <!-- Iterate over facilities and generate cards -->
-          <div
-                  th:each="facility : ${facilities}"
-                  class="bg-white rounded-lg overflow-hidden shadow-md"
-          >
-            <div class="p-6">
-              <div class="flex justify-between items-center">
-                <h2
-                        class="text-xl font-semibold mb-2"
-                        th:text="${facility.name}"
-                >
-                  Name
-                </h2>
-                <div
-                        th:text="${facility.status.getDisplayName()}"
-                        th:class="${facility.status.getStatusColor()}"
-                ></div>
-              </div>
-              <p class="mb-2">
-                <span class="font-bold">Weekdays:</span>
-                <span
-                        th:text="${#temporals.format(facility.weekdayOpeningTime, 'h:mma')}+ ' to ' + ${#temporals.format(facility.weekdayClosingTime, 'h:mma')}"
-                ></span>
-              </p>
-              <p class="mb-2">
-                <span class="font-bold">Weekends:</span>
-                <span
-                        th:text="${#temporals.format(facility.weekendOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekendClosingTime, 'h:mma')}"
-                ></span>
-              </p>
-              <a
-                      th:href="@{/admin/maintenance/{id}(id=${facility.id})}"
-                      class="bg-blue-500 w-full font-medium text-center text-white p-2 rounded-md hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue mt-4 inline-block"
-              >Schedule</a
-              >
-            </div>
-          </div>
-        </div>
+        <h2 class="text-2xl font-semibold mb-4">Facilities</h2>
+        <!-- Facilities Table -->
+        <table class="min-w-full bg-white border border-gray-200">
+          <thead>
+          <tr class="bg-gray-100">
+            <th class="text-left py-2 px-4 border-b">Facility Name</th>
+            <th class="text-left py-2 px-4 border-b">Status</th>
+            <th class="text-left py-2 px-4 border-b">Weekdays</th>
+            <th class="text-left py-2 px-4 border-b">Weekends</th>
+            <th class="text-left py-2 px-4 border-b">Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <!-- Iterate over facilities and generate rows -->
+          <tr th:each="facility : ${facilities}" class="hover:bg-gray-50">
+            <td class="py-2 px-4 border-b" th:text="${facility.name}">Name</td>
+            <td class="border-b" th:text="${facility.status.getDisplayName()}" th:class="${facility.status.getStatusColor()}">Status</td>
+            <td class="py-2 px-4 border-b">
+              <span th:text="${#temporals.format(facility.weekdayOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekdayClosingTime, 'h:mma')}">Hours</span>
+            </td>
+            <td class="py-2 px-4 border-b">
+              <span th:text="${#temporals.format(facility.weekendOpeningTime, 'h:mma')} + ' to ' + ${#temporals.format(facility.weekendClosingTime, 'h:mma')}">Hours</span>
+            </td>
+            <td class="py-2 px-4 border-b">
+              <a th:href="@{/admin/maintenance/{id}(id=${facility.id})}"
+                 class="bg-blue-500 font-medium text-center text-white p-2 rounded-md hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
+                Schedule
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
+
 
       <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mt-6 mb-8">
         Maintenance Schedule
