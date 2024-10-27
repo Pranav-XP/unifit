@@ -24,11 +24,8 @@ public class EventService {
         return eventRepository.findAll();
     }
 
-    public void saveEvent(Event event, MultipartFile imageFile) {
-        if (imageFile != null && !imageFile.isEmpty()) {
-            String imageName = saveImage(imageFile);
-            event.setImageUrl(imageName);
-        }
+  public void saveEvent(Event event) {
+
         eventRepository.save(event);
     }
 
@@ -40,7 +37,7 @@ public class EventService {
         eventRepository.deleteById(id);
     }
 
-    // Method to handle image storage
+/*    // Method to handle image storage
     public String saveImage(MultipartFile file) {
         try {
             // Create a unique name for the image file
@@ -58,9 +55,9 @@ public class EventService {
             e.printStackTrace();
             return null;
         }
-    }
+    }*/
 
-    public void updateEvent(Long eventId, Event updatedEvent, MultipartFile file) {
+    public void updateEvent(Long eventId, Event updatedEvent/*, MultipartFile file*/) {
         Event existingEvent = eventRepository.findById(eventId).orElse(null);
 
         if (existingEvent != null) {
@@ -70,11 +67,11 @@ public class EventService {
             existingEvent.setEventDateTime(updatedEvent.getEventDateTime()); // Ensure this is set
             existingEvent.setFacility(updatedEvent.getFacility());
 
-            // If a new image is provided, save it and update the image field
+/*            // If a new image is provided, save it and update the image field
             if (file != null && !file.isEmpty()) {
                 String imageName = saveImage(file);
                 existingEvent.setImageUrl(imageName);
-            }
+            }*/
 
             eventRepository.save(existingEvent);
         }

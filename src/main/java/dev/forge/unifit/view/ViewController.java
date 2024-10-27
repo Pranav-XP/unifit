@@ -1,6 +1,8 @@
 package dev.forge.unifit.view;
 
 import dev.forge.unifit.email.EmailService;
+import dev.forge.unifit.event.Event;
+import dev.forge.unifit.event.EventService;
 import dev.forge.unifit.facility.Facility;
 import dev.forge.unifit.facility.FacilityService;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +19,14 @@ import java.util.List;
 public class ViewController {
     private final EmailService email;
     private final FacilityService facilityService;
+    private final EventService eventService;
 
     @GetMapping()
     public String homePage(Model model){
         List<Facility> facilities = facilityService.getAllFacilities();
+        List<Event> events = eventService.getAllEvents();
         model.addAttribute("facilities",facilities);
+        model.addAttribute("events", events);
         return "index";
     }
 
