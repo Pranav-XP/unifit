@@ -51,8 +51,8 @@ public class EventController {
 /*        // Save image and set imageUrl in the event
         String imageName = eventService.saveImage(imageFile);
         event.setImageUrl(imageName);
-
-        eventService.saveEvent(event, imageFile); // Save event with image URL*/
+// Save event with image URL*/
+        eventService.saveEvent(event);
         return "redirect:/events"; // redirect to the events page after saving
     }
 
