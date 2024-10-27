@@ -3,101 +3,114 @@
 <head>
     <title>UniFit | Admin</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        #revenueChart {
-            width: 80%;
-            height: 400px;
-            margin: auto;
-        }
-        canvas {
-            max-width: 600px;
-            margin: auto;
-        }
-    </style>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
 <div th:replace="~{fragments/admin-dashboard.html}">
     <div th:fragment="content">
         <h1 class="text-3xl lg:text-5xl px-5 py-5 font-bold">Reporting and Analytics</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg shadow-lg">
+            <!-- Monthly Revenue Chart (Spanning both columns) -->
+            <div id="monthlyRevenueChart" class="col-span-1 md:col-span-2 h-96 bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                <!-- The Google Chart for Monthly Revenue will render here -->
+            </div>
 
-        <!-- Pie Chart Section -->
-        <div>
-            <canvas id="revenueChart"></canvas> <!-- Canvas for the Pie chart -->
+            <!-- Revenue by Facility Type Chart -->
+            <div id="revenueByFacilityChart" class="h-96 bg-white p-2 rounded-lg shadow-md border border-gray-200">
+                <!-- The Google Chart for Revenue by Facility Type will render here -->
+            </div>
+
+            <!-- Occupancy Rate Chart -->
+            <div id="occupancyChart" class="h-96 bg-white p-2 rounded-lg shadow-md border border-gray-200">
+                <!-- The Google Chart for Occupancy Rate will render here -->
+            </div>
         </div>
+
+
+        <script type="text/javascript">
+            // Load the Google Charts API
+            google.charts.load('current', { 'packages': ['corechart'] });
+            google.charts.setOnLoadCallback(drawCharts);
+
+            // Function to draw the charts
+            async function drawCharts() {
+                // Fetch data for monthly revenue
+                const monthlyRevenueResponse = await fetch('/api/revenue/monthly');
+                const monthlyRevenue = await monthlyRevenueResponse.json();
+
+                // Fetch data for revenue by facility type
+                const revenueByFacilityResponse = await fetch('/api/revenue/by-facility');
+                const revenueByFacility = await revenueByFacilityResponse.json();
+
+                console.log(revenueByFacility);
+                console.log(monthlyRevenue);
+
+                // Draw the Monthly Revenue chart
+                drawMonthlyRevenueChart(monthlyRevenue);
+                // Draw the Revenue by Facility Type chart
+                drawRevenueByFacilityChart(revenueByFacility);
+            }
+
+            function drawMonthlyRevenueChart(monthlyRevenue) {
+                const data = new google.visualization.DataTable();
+                data.addColumn('string', 'Month');
+                data.addColumn('number', 'Revenue');
+
+                // Assuming `monthlyRevenue` is an array of FacilityRevenue objects
+                monthlyRevenue.forEach(item => {
+                    data.addRow([item.month, item.totalRevenue]);
+                });
+
+                const options = {
+                    title: 'Monthly Revenue Comparison',
+                    titleTextStyle: {
+                        fontSize: 20, // Title font size
+                        bold: true // Title boldness
+                    },
+                    chartArea: {
+                        width: '90%', // Use 90% of the container's width
+                        height: '70%' // Use 70% of the container's height
+                    },
+                    hAxis: { title: 'Months' },
+                    vAxis: { title: 'Revenue ($)' },
+                    colors: ['#76A7FA'],
+                    legend: { position: 'left' }
+                };
+
+                const chart = new google.visualization.ColumnChart(document.getElementById('monthlyRevenueChart'));
+                chart.draw(data, options);
+            }
+
+            function drawRevenueByFacilityChart(revenueByFacility) {
+                const data = new google.visualization.DataTable();
+                data.addColumn('string', 'Facility Type');
+                data.addColumn('number', 'Revenue');
+
+                for (const [facility, revenue] of Object.entries(revenueByFacility)) {
+                    data.addRow([facility, revenue]);
+                }
+
+                const options = {
+                    title: 'Revenue by Facility Type',
+                    titleTextStyle: {
+                        fontSize: 20, // Title font size
+                        bold: true // Title boldness
+                    },chartArea: {
+                        width: '90%', // Use 90% of the container's width
+                        height: '70%' // Use 70% of the container's height
+                    },
+                    pieHole: 0.4,
+                    colors: ['#63ffa1', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
+                    legend: { position: 'left' }
+                };
+
+                const chart = new google.visualization.PieChart(document.getElementById('revenueByFacilityChart'));
+                chart.draw(data, options);
+            }
+        </script>
+
     </div>
 </div>
-
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    // Get facility revenue data from the Thymeleaf model
-    var facilityRevenues = /*[[${facilityRevenues}]]*/ [];
-
-    // Prepare the data for the chart
-    var labels = facilityRevenues.map(function(revenue) {
-        return revenue.month; // Extract month names
-    });
-
-    var data = facilityRevenues.map(function(revenue) {
-        return revenue.totalRevenue; // Extract revenue values
-    });
-
-    // Get the canvas element
-    var ctx = document.getElementById('revenueChart').getContext('2d');
-
-    // Create the Pie chart
-    var revenueChart = new Chart(ctx, {
-        type: 'pie', // Pie chart type
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Monthly Facility Revenues',
-                data: data,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Facility Monthly Revenues'
-                }
-            }
-        }
-    });
-    /*]]>*/
-</script>
 
 <script>
     const socket = new SockJS("/ws");
