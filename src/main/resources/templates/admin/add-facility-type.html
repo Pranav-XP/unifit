@@ -21,6 +21,9 @@
                   type="text"
                   id="name"
                   name="name"
+                  maxlength="50"
+                  placeholder="Enter Facility Type Here"
+                  title="Name cannot exceed 50 characters"
                   th:field="*{name}"
                   required
                   class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
@@ -35,6 +38,9 @@
                   type="number"
                   id="rate"
                   name="rate"
+                  min="1"
+                  placeholder="Enter a rate"
+                  title="Rate must be a number greater than 0"
                   th:field="*{rate}"
                   required
                   class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"

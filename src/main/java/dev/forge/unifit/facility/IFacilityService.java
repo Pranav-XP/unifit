@@ -12,5 +12,5 @@ public interface IFacilityService {
     Facility getFacility(Long id);
     Facility addFacility(Facility facility, MultipartFile file) throws IOException;
 
-    Facility saveFacility(Facility facility);
+   Facility saveFacility(Facility updatedFacility, MultipartFile file) throws IOException;
 }

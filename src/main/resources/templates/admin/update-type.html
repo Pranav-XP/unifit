@@ -35,24 +35,29 @@
                 type="text"
                 id="name"
                 name="name"
+                maxlength="50"
+                placeholder="Enter Facility Type Here"
+                title="Name cannot exceed 50 characters"
                 th:field="*{name}"
                 class="w-full px-3 py-2 border rounded-md"
                 required
               />
             </div>
 
-            <!-- Facility Image URL -->
             <div class="mb-4">
               <label
-                for="imageUrl"
+                for="rate"
                 class="block text-gray-700 font-semibold mb-2"
                 >Rate:</label
               >
               <input
                 required
                 type="number"
-                id="imageUrl"
-                name="imageUrl"
+                id="rate"
+                name="rate"
+                min="1"
+                placeholder="Enter a rate"
+                title="Rate must be a number greater than 0"
                 th:field="*{rate}"
                 class="w-full px-3 py-2 border rounded-md"
               />
