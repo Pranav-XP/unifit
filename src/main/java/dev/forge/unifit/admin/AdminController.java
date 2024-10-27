@@ -7,6 +7,7 @@ import dev.forge.unifit.booking.BookingStatus;
 import dev.forge.unifit.event.Event;
 import dev.forge.unifit.event.EventService;
 import dev.forge.unifit.facility.Facility;
+import dev.forge.unifit.facility.FacilityRevenue;
 import dev.forge.unifit.facility.FacilityService;
 import dev.forge.unifit.facility.facilitytype.FacilityType;
 import dev.forge.unifit.facility.facilitytype.FacilityTypeService;
@@ -291,5 +292,13 @@ public class AdminController {
         return "redirect:/admin/events";
     }
 
+    @GetMapping("/reports")
+    public String reportsPage(Model model) {
+        List<FacilityRevenue> facilityRevenues = facilityService.getMonthlyRevenue(LocalDate.now());
+        model.addAttribute("facilityRevenues", facilityRevenues);
 
+        Map<String, Double> revenueByFacilityType = facilityService.getRevenueByFacilityType(LocalDate.now().getYear());
+        model.addAttribute("revenueData", revenueByFacilityType);
+        return "admin/admin-report";
+    }
 }

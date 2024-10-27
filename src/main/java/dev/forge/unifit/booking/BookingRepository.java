@@ -44,6 +44,17 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
     Optional<Booking> findBookingByBookedDateAndStartAndFacility(@Param("bookedDate") LocalDate bookedDate,
                                                                  @Param("start") LocalTime start,
                                                                  @Param("facilityId") Long facilityId);
+
+    @Query("FROM Booking b WHERE MONTH(b.bookedDate) = :month AND YEAR(b.bookedDate) = :year")
+    List<Booking> findBookingsByMonthAndYear(int month, int year);
+
+    @Query("SELECT b FROM Booking b WHERE FUNCTION('YEAR', b.bookedDate) = :year")
+    List<Booking> findBookingsByYear(@Param("year") int year);
+
+    List<Booking> findByBookedDateBetween(LocalDate startDate, LocalDate endDate);
+
+
+
     //Integer countBookingsByFacility(Facility facility);
     //Booking findByBookedDateAndStatus(LocalDate bookedDate, BookingStatus status);
 }
