@@ -47,8 +47,10 @@ public class EmailService {
             throw new RuntimeException("MessageHelper could not be created", e);
         }
 
-        List<String> recipients = userService.getAllUserEmailsExceptAdmin("admin@admin.com");
-        helper.setTo("pranavchand777@gmail.com");
+        List<String> recipientsList = userService.getAllUserEmailsExceptAdmin("admin@admin.com");
+        String[] recipients = recipientsList.toArray(new String[0]);
+
+        helper.setTo(recipients);
         helper.setSubject("UniFit Event - "+event.getEventName());
         String facilityName = facilityService.getFacility(event.getFacility().getId()).getName();
         // Prepare the context for the Thymeleaf template
