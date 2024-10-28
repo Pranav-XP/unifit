@@ -31,7 +31,6 @@ public class FacilityType {
     @Size(max = 50, message = "Name cannot exceed 50 characters")
     private String name;
 
-    @Column(unique = true)
     @NotNull(message = "Rate cannot be null")
     @Min(value = 1, message = "Rate must be greater than 0")
     private Integer rate;
