@@ -41,7 +41,7 @@
       <li sec:authorize="isAuthenticated()" class="hover:underline"><a th:href="@{/user}">Profile</a></li>
       <li sec:authorize="hasRole('ROLE_ADMIN')" class="hover:underline"><a th:href="@{/admin}">Dashboard</a></li>
       <li sec:authorize="hasRole('ROLE_ADMIN')" class="hover:underline"><a th:href="@{/admin/users}">Manage Bookings</a></li>
-      <li sec:authorize="hasRole('ROLE_ADMIN')" class="hover:underline"><a th:href="@{/admin/schedule}">Maintenance</a></li>
+      <li sec:authorize="hasRole('ROLE_ADMIN')" class="hover:underline"><a th:href="@{/admin/maintenance}">Maintenance</a></li>
       <li sec:authorize="hasRole('ROLE_ADMIN')" class="hover:underline"><a th:href="@{/admin/facilities}">Manage Facilities</a></li>
       <li sec:authorize="hasRole('ROLE_ADMIN')" class="hover:underline"><a th:href="@{/admin/events}">Manage Events</a></li>
       <li sec:authorize="hasRole('ROLE_ADMIN')" class="hover:underline"><a th:href="@{/admin/reports}">View Report</a></li>
