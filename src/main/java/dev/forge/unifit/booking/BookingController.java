@@ -127,6 +127,10 @@ public class BookingController {
     public String confirmBookings(@ModelAttribute("bookingList") List<BookingFormDTO> bookingList,
                                   SessionStatus sessionStatus,
                                   RedirectAttributes redirectAttributes){
+        if(bookingList.isEmpty()){
+            redirectAttributes.addFlashAttribute("errorMessage", "Please select a booking.");
+            return "redirect:/booking";
+        }
 
         try{
             bookingService.createBooking(bookingList);
