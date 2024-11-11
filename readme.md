@@ -14,6 +14,9 @@
 
 UniFit is a web application designed to manage university facilities, events, and bookings efficiently. It offers a comprehensive suite of features for users to book facilities, manage events, and receive real-time notifications, all while adhering to a clean and scalable MVC architecture.
 
+![admin-dashboard page](https://github.com/user-attachments/assets/b9c4013c-3599-4204-8dfc-c8c80ba93edf)
+
+
 ### Tech Stack
 - **Backend**: Spring Boot
 - **Frontend**: Thymeleaf
