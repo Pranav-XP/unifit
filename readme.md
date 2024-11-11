@@ -2,7 +2,7 @@
 ---
 
 # UniFit Sports Management System
-
+![unifit-homepage](https://raw.githubusercontent.com/Pranav-XP/unifit/refs/heads/main/unifit_home.png)
 ## Group 1 - Team Forge
 - Pranav Chand S11171153 
 - Aastha Mehta S11212478
