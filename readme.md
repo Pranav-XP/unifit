@@ -25,6 +25,7 @@ UniFit is a web application designed to manage university facilities, events, an
 - **Architecture**: Model-View-Controller (MVC)
 
 ## Features Implemented
+![booking-page](https://raw.githubusercontent.com/Pranav-XP/unifit/refs/heads/main/unifit-booking-page.png)
 
 1. **Facilities Management**  
    Facilities and facility types can be created, read, updated, and deleted (CRUD operations) by the administrators.
